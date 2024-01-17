@@ -14,7 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""Executable and reusable sample for creating a Reference List."""
+"""Executable and reusable sample for creating a Reference List.
+
+
+Requires the following IAM permission on the parent resource: chronicle.referenceLists.create
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.referenceLists/create
+"""
 
 import argparse
 from typing import Sequence
@@ -27,7 +32,6 @@ from common import regions
 
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
-    "https://www.googleapis.com/auth/chronicle-backstory",
 ]
 
 
@@ -73,11 +77,15 @@ def create_list(
 
     parent = f"projects/{args.project_id}/locations/{args.region}/instances/{args.project_guid}"
     url = f"https://{args.region}-chronicle.googleapis.com/v1alpha/{parent}/referenceLists"
-    # Test auth
+
+    # Test auth with a Get List
     response = http_session.request("GET", url)
     if response.status_code >= 400:
         print(response.text)
     response.raise_for_status()
+
+    # entries are list like [{"value": <string>}, ...]
+    # https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.referenceLists#resource:-referencelist
     entries = []
     for content_line in content_lines:
         entries.append({"value": content_line.strip()})
