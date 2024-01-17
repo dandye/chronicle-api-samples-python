@@ -25,7 +25,10 @@ from google.oauth2 import service_account
 from common import chronicle_auth
 from common import regions
 
-SCOPES = ['https://www.googleapis.com/auth/cloud-platform','https://www.googleapis.com/auth/chronicle-backstory']
+SCOPES = [
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/chronicle-backstory",
+]
 
 
 def authorize(credentials_file_path, scopes):
@@ -38,15 +41,19 @@ def authorize(credentials_file_path, scopes):
     Returns:
         requests.AuthorizedSession: An authorized session for making API calls.
     """
-    credentials = service_account.Credentials.from_service_account_file(credentials_file_path, scopes=scopes)
+    credentials = service_account.Credentials.from_service_account_file(
+        credentials_file_path, scopes=scopes
+    )
     return requests.AuthorizedSession(credentials)
 
 
-def create_list(http_session: requests.AuthorizedSession,
-                name: str,
-                description: str,
-                content_lines: Sequence[str],
-                content_type: str) -> str:
+def create_list(
+    http_session: requests.AuthorizedSession,
+    name: str,
+    description: str,
+    content_lines: Sequence[str],
+    content_type: str,
+) -> str:
     """Creates a list.
 
     Args:
@@ -64,7 +71,7 @@ def create_list(http_session: requests.AuthorizedSession,
         (response.status_code >= 400).
     """
 
-    parent=f"projects/{args.project_id}/locations/{args.region}/instances/{args.project_guid}"
+    parent = f"projects/{args.project_id}/locations/{args.region}/instances/{args.project_guid}"
     url = f"https://{args.region}-chronicle.googleapis.com/v1alpha/{parent}/referenceLists"
     # Test auth
     response = http_session.request("GET", url)
@@ -97,19 +104,18 @@ if __name__ == "__main__":
     chronicle_auth.add_argument_credentials_file(parser)
     regions.add_argument_region(parser)
     parser.add_argument(
-        "-n", "--name", type=str, required=True, help="unique name for the list")
+        "-n", "--name", type=str, required=True, help="unique name for the list"
+    )
     parser.add_argument(
-        "-d",
-        "--description",
-        type=str,
-        required=True,
-        help="description of the list")
+        "-d", "--description", type=str, required=True, help="description of the list"
+    )
     parser.add_argument(
         "-t",
         "--syntax_type",
         type=str,
         default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
-        help="type of list lines")
+        help="type of list lines",
+    )
     parser.add_argument(
         "-f",
         "--list_file",
@@ -119,24 +125,26 @@ if __name__ == "__main__":
         #   python3 -m lists.create_list <other args> -f <path>
         # STDIN example:
         #   cat <path> | python3 -m lists.create_list <other args> -f -
-        help="path of a file containing the list content, or - for STDIN")
+        help="path of a file containing the list content, or - for STDIN",
+    )
     parser.add_argument(
-        "-p",
-        "--project_id",
-        type=str,
-        required=True,
-        help="Your BYOP, project id")
+        "-p", "--project_id", type=str, required=True, help="Your BYOP, project id"
+    )
     parser.add_argument(
         "-g",
         "--project_guid",
         type=str,
         required=True,
-        help="Your Chronicle instance's GUID")
+        help="Your Chronicle instance's GUID",
+    )
 
     args = parser.parse_args()
     auth_session = authorize(args.credentials_file, SCOPES)
-    new_list_create_time = create_list(auth_session, args.name, args.description,
-                                        args.list_file.read().splitlines(),
-                                        args.syntax_type,
-                                        )
+    new_list_create_time = create_list(
+        auth_session,
+        args.name,
+        args.description,
+        args.list_file.read().splitlines(),
+        args.syntax_type,
+    )
     print(f"New list created successfully, at {new_list_create_time}")
