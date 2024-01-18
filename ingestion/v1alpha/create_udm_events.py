@@ -49,6 +49,7 @@ https://cloud.google.com/chronicle/docs/unified-data-model/udm-usage
 
 import argparse
 import json
+from typing import List
 
 from google.auth.transport import requests
 from google.oauth2 import service_account
@@ -68,12 +69,13 @@ SCOPES = [
 ]
 
 
-def authorize(credentials_file_path, scopes):
+def authorize(credentials_file_path: str, scopes: List(str)) -> requests.AuthorizedSession:
     """
     Obtains an authorized session using the provided credentials.
 
     Args:
         credentials (google.oauth2.service_account.Credentials): The service account credentials.
+        scopes (List(str)): List of Chronicle API Scopes
 
     Returns:
         requests.AuthorizedSession: An authorized session for making API calls.
