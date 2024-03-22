@@ -95,7 +95,7 @@ def update_alert(
     alert_id: str,
     confidence: int,
     reason: str,
-    reputaion: str,
+    reputation: str,
     priority: str,
     status: str,
     verdict: str,
@@ -107,7 +107,13 @@ def update_alert(
     proj_id: GCP project id or number to which the target instance belongs.
     proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
     proj_region: region in which the target project is located.
-    ...
+    alert_id: identifier for the alert
+    confidence: confidence score (0-100) of the finding
+    reason: reason for closing an Alert
+    reputaion: A categorization of the finding as useful or not useful
+    priority: alert priority.
+    status: status of the alert
+    verdict: verdict of the alert
 
   Returns:
     Dictionary representation of the Alert
@@ -124,25 +130,41 @@ def update_alert(
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyUpdateAlert/"
 
+  feedback = { }
+        # "idp_user_id": "admin@dandye.altostrat.com",  # readonly
+        # "create_time": string,  # readonly
+
+        #"confidence_score": confidence,
+        #"reason": reason,
+        #"reputation": reputation,
+        #"priority": priority,
+        #"status": status,
+        #"verdict": verdict,
+
+        #"risk_score": integer,
+        #"disregarded": boolean,
+        #"severity": integer,
+        #"comment": string,
+        #"root_cause": string,
+        #"reason": enum (Reason),
+        #"severity_display": string
+
+  if confidence:
+    feedback["confidence_score"] = confidence
+  if reason:
+    feedback["reason"] = reason
+  if reputation:
+    feedback["reputation"] = reputation
+  if priority:
+    feedback["priority"] = priority
+  if status:
+    feedback["status"] = status
+  if verdict:
+    feedback["verdict"] = verdict
+
   payload = {
     "alert_id": alert_id,
-    "feedback":  {
-      # "idp_user_id": "admin@dandye.altostrat.com",  # readonly
-      # "create_time": string,  # readonly
-      "confidence_score": confidence,
-      "reason": reason,
-      "reputation": reputaion,
-      "priority": priority,
-      "status": status,
-      "verdict": verdict,
-      #"risk_score": integer,
-      #"disregarded": boolean,
-      #"severity": integer,
-      #"comment": string,
-      #"root_cause": string,
-      #"reason": enum (Reason),
-      #"severity_display": string
-    }
+    "feedback": feedback,
   }
 
   response = http_session.request("POST", url, json=payload)
@@ -178,34 +200,38 @@ if __name__ == "__main__":
   parser.add_argument(
       "--priority",
       choices=PRIORITY_ENUM,
-      required=True,
+      required=False,
       help="alert priority.",
   )
   parser.add_argument(
       "--reason",
       choices=REASON_ENUM,
-      required=True,
+      required=False,
       help="reason for closing an Alert",
   )
   parser.add_argument(
-      "--reputaion",
+      "--reputation",
       choices=REPUTATION_ENUM,
-      required=True,
+      required=False,
       help="A categorization of the finding as useful or not useful",
   )
   parser.add_argument(
       "--status",
       choices=STATUS_ENUM,
-      required=True,
+      required=False,
       help="alert status",
   )
   parser.add_argument(
       "--verdict",
       choices=VERDICT_ENUM,
-      required=True,
+      required=False,
       help="a verdict on whether the finding reflects a security incident",
   )
   args = parser.parse_args()
+
+  # Check if at least one of the specific arguments is provided
+  if not any([args.priority, args.reason, args.reputation, args.status, args.verdict]):
+    parser.error("At least one of the arguments --priority, --reason, --reputation, --status, or --verdict is required.")
 
   auth_session = chronicle_auth.initialize_http_session(
       args.credentials_file,
@@ -219,7 +245,7 @@ if __name__ == "__main__":
       args.alert_id,
       args.confidence_score,
       args.reason,
-      args.reputaion,
+      args.reputation,
       args.priority,
       args.status,
       args.verdict,
