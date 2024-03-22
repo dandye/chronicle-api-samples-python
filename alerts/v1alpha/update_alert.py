@@ -26,8 +26,15 @@ Usage:
     --reputaion=<REPUTATION> \
     --priority=<PRIORITY> \
     --status=<STATUS> \
-    --verdict=<VERDICT>
+    --verdict=<VERDICT> \
+    --risk_score=<RISK_SCORE> \
+    --disregarded=<DISREGARDED> \
+    --severity=<SEVERITY> \
+    --comment=<COMMENT> \
+    --root_cause=<ROOT_CAUSE> \
+    --severity_display=<SEVERITY_DISPLAY>
 
+# pylint: disable=line-too-long
 API reference:
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyUpdateAlert
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Priority
@@ -37,6 +44,7 @@ API reference:
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Status
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Verdict
 """
+# pylint: enable=line-too-long
 
 import argparse
 import json
@@ -99,6 +107,12 @@ def update_alert(
     priority: str,
     status: str,
     verdict: str,
+    risk_score,
+    disregarded,
+    severity,
+    comment,
+    root_cause,
+    severity_display,
     ) -> Dict[str, any]:
   """Gets an Alert.
 
@@ -130,25 +144,7 @@ def update_alert(
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyUpdateAlert/"
 
-  feedback = { }
-        # "idp_user_id": "admin@dandye.altostrat.com",  # readonly
-        # "create_time": string,  # readonly
-
-        #"confidence_score": confidence,
-        #"reason": reason,
-        #"reputation": reputation,
-        #"priority": priority,
-        #"status": status,
-        #"verdict": verdict,
-
-        #"risk_score": integer,
-        #"disregarded": boolean,
-        #"severity": integer,
-        #"comment": string,
-        #"root_cause": string,
-        #"reason": enum (Reason),
-        #"severity_display": string
-
+  feedback = {}
   if confidence:
     feedback["confidence_score"] = confidence
   if reason:
@@ -161,6 +157,18 @@ def update_alert(
     feedback["status"] = status
   if verdict:
     feedback["verdict"] = verdict
+  if risk_score:
+    feedback["risk_score"] = risk_score
+  if disregarded:
+    feedback["disregarded"] = disregarded
+  if severity:
+    feedback["severity"] = severity
+  if comment:
+    feedback["comment"] = comment
+  if root_cause:
+    feedback["root_cause"] = root_cause
+  if severity_display:
+    feedback["severity_display"] = severity_display
 
   payload = {
     "alert_id": alert_id,
@@ -227,6 +235,43 @@ if __name__ == "__main__":
       required=False,
       help="a verdict on whether the finding reflects a security incident",
   )
+  parser.add_argument(
+      "--risk_score",
+      type=int,
+      required=False,
+      help="risk score (0-100) of the finding",
+  )
+  parser.add_argument(
+      "--disregarded",
+      type=bool,
+      required=False,
+      help="Analyst disregard (or un-disregard) the event",
+  )
+  parser.add_argument(
+      "--severity",
+      type=int,
+      required=False,
+      help="severity score (1-100) of the finding",
+  )
+  parser.add_argument(
+      "--comment",
+      type=str,
+      required=False,
+      help="Analyst comment.",
+  )
+  parser.add_argument(
+      "--root_cause",
+      type=str,
+      required=False,
+      help="Alert root cause.",
+  )
+  parser.add_argument(
+      "--severity_display",
+      type=str,
+      required=False,
+      help="Severity display name for UI and filtering",
+  )
+
   args = parser.parse_args()
 
   # Check if at least one of the specific arguments is provided
@@ -249,5 +294,11 @@ if __name__ == "__main__":
       args.priority,
       args.status,
       args.verdict,
+      args.risk_score,
+      args.disregarded,
+      args.severity,
+      args.comment,
+      args.root_cause,
+      args.severity_display,
   )
   print(json.dumps(a_list, indent=2))
