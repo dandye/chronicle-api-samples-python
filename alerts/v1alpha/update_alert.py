@@ -75,16 +75,16 @@ def update_alert(
   )
   # pylint: disable-next=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}//legacy:legacyUpdateAlert"
+  url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyUpdateAlert/"
 
   payload = {
     "alert_id": alert_id,
     "feedback":  {
-      "idp_user_id": "admin@dandye.altostrat.com",
+      # "idp_user_id": "admin@dandye.altostrat.com",  # readonly
       # "create_time": string,  # readonly
-      "verdict": "FALSE_POSITIVE"  # enum (Verdict),
+      "verdict": "FALSE_POSITIVE",  # enum (Verdict),
       #"reputation": enum (Reputation),
-      #"confidence_score": integer,
+      "confidence_score": 100,
       #"risk_score": integer,
       #"disregarded": boolean,
       ##"severity": integer,
@@ -97,7 +97,8 @@ def update_alert(
     }
   }
 
-  response = http_session.request("POST", url, data=payload)
+  response = http_session.request("POST", url, json=payload)
+
   # Expected server response is described in:
   # https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyUpdateAlert
   if response.status_code >= 400:
@@ -113,7 +114,7 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   parser.add_argument(
-      "--alert-id", type=str, required=True,
+      "--alert_id", type=str, required=True,
       help="identifier for the alert"
   )
   parser.add_argument(
