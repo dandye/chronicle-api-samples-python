@@ -48,7 +48,7 @@ API reference:
 
 import argparse
 import json
-from typing import Dict
+from typing import Any, Mapping
 
 from common import chronicle_auth
 from common import project_id
@@ -107,27 +107,33 @@ def update_alert(
     priority: str,
     status: str,
     verdict: str,
-    risk_score,
-    disregarded,
-    severity,
-    comment,
-    root_cause,
-    severity_display,
-    ) -> Dict[str, any]:
+    risk_score: int,
+    disregarded: bool,
+    severity: int,
+    comment: str,
+    root_cause: str,
+    severity_display: str,
+    ) -> Mapping[str, Any]:
   """Gets an Alert.
 
   Args:
     http_session: Authorized session for HTTP requests.
     proj_id: GCP project id or number to which the target instance belongs.
     proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-    proj_region: region in which the target project is located.
-    alert_id: identifier for the alert
-    confidence: confidence score (0-100) of the finding
-    reason: reason for closing an Alert
-    reputaion: A categorization of the finding as useful or not useful
-    priority: alert priority.
-    status: status of the alert
-    verdict: verdict of the alert
+    proj_region: Region in which the target project is located.
+    alert_id: Identifier for the alert.
+    confidence: Confidence score (0-100) of the finding.
+    reason: Reason for closing an Alert.
+    reputation: A categorization of the finding as useful or not useful.
+    priority: Alert priority.
+    status: Status of the alert.
+    verdict: Verdict of the alert.
+    risk_score: Risk score (0-100) of the finding.
+    disregarded: Analyst disregard (or un-disregard) the event.
+    severity: Severity score (1-100) of the finding.
+    comment: Analyst comment.
+    root_cause: Alert root cause.
+    severity_display: Severity display name for UI and filtering.
 
   Returns:
     Dictionary representation of the Alert
@@ -171,8 +177,8 @@ def update_alert(
     feedback["severity_display"] = severity_display
 
   payload = {
-    "alert_id": alert_id,
-    "feedback": feedback,
+      "alert_id": alert_id,
+      "feedback": feedback,
   }
 
   response = http_session.request("POST", url, json=payload)
@@ -194,10 +200,6 @@ if __name__ == "__main__":
   parser.add_argument(
       "--alert_id", type=str, required=True,
       help="identifier for the alert"
-  )
-  parser.add_argument(
-      "-d", "--include-detections", type=bool, default=False,required=False,
-      help="flag to include detections"
   )
   parser.add_argument(
       "--confidence_score",
@@ -275,8 +277,10 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   # Check if at least one of the specific arguments is provided
-  if not any([args.priority, args.reason, args.reputation, args.status, args.verdict]):
-    parser.error("At least one of the arguments --priority, --reason, --reputation, --status, or --verdict is required.")
+  if not any([args.priority, args.reason, args.reputation,
+              args.status, args.verdict]):
+    parser.error("At least one of the arguments --priority, --reason, "
+                 "--reputation, --status, or --verdict is required.")
 
   auth_session = chronicle_auth.initialize_http_session(
       args.credentials_file,

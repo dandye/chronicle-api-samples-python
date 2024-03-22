@@ -20,7 +20,7 @@ Usage:
   python -m alerts.v1alpha.get_alert \
     --project_id=<PROJECT_ID>   \
     --project_instance=<PROJECT_INSTANCE> \
-    --alert_id="COLDRIVER_SHA256"
+    --alert_id=<ALERT_ID>
 
 API reference:
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyGetAlert
@@ -29,7 +29,7 @@ API reference:
 
 import argparse
 import json
-from typing import Dict
+from typing import Any, Mapping
 
 from common import chronicle_auth
 from common import project_id
@@ -51,7 +51,7 @@ def get_alert(
     proj_region: str,
     alert_id: str,
     include_detections: bool = False,
-) -> Dict[str, any]:
+) -> Mapping[str, Any]:
   """Gets an Alert.
 
   Args:
@@ -59,7 +59,8 @@ def get_alert(
     proj_id: GCP project id or number to which the target instance belongs.
     proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
     proj_region: region in which the target project is located.
-    ...
+    alert_id: Identifier for the alert.
+    include_detections: Flag to include detections.
 
   Returns:
     Dictionary representation of the Alert
@@ -101,7 +102,7 @@ if __name__ == "__main__":
       help="identifier for the alert"
   )
   parser.add_argument(
-      "-d", "--include-detections", type=bool, default=False,required=False,
+      "-d", "--include-detections", type=bool, default=False, required=False,
       help="flag to include detections"
   )
   args = parser.parse_args()
