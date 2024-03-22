@@ -14,18 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-r"""Executable and reusable sample for getting a Reference List.
+r"""Executable and reusable sample for updating an Alert.
 
 Usage:
   python -m alerts.v1alpha.update_alert \
     --project_id=<PROJECT_ID>   \
     --project_instance=<PROJECT_INSTANCE> \
-    --alert_id="COLDRIVER_SHA256"
-    # ToDo: verdict, status, idp_user_id
+    --alert_id=<ALERT_ID> \
+    --priority=<PRIORITY> \
+    --reason=<REASON> \
+    --reputaion=<REPUTATION> \
+    --priority=<PRIORITY> \
+    --status=<STATUS> \
+    --verdict=<VERDICT>
 
 API reference:
   https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyUpdateAlert
-
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Priority
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Reason
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Reputation
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Priority
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Status
+  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Verdict
 """
 
 import argparse
@@ -44,6 +54,38 @@ SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
 
+PRIORITY_ENUM = (
+    "PRIORITY_UNSPECIFIED",
+    "PRIORITY_INFO",
+    "PRIORITY_LOW",
+    "PRIORITY_MEDIUM",
+    "PRIORITY_HIGH",
+    "PRIORITY_CRITICAL",
+)
+REASON_ENUM = (
+    "REASON_UNSPECIFIED",
+    "REASON_NOT_MALICIOUS",
+    "REASON_MALICIOUS",
+    "REASON_MAINTENANCE",
+)
+REPUTATION_ENUM = (
+    "REPUTATION_UNSPECIFIED",
+    "USEFUL",
+    "NOT_USEFUL",
+)
+STATUS_ENUM = (
+    "STATUS_UNSPECIFIED",
+    "NEW",
+    "REVIEWED",
+    "CLOSED",
+    "OPEN",
+)
+VERDICT_ENUM = (
+    "VERDICT_UNSPECIFIED",
+    "TRUE_POSITIVE",
+    "FALSE_POSITIVE",
+)
+
 
 def update_alert(
     http_session: requests.AuthorizedSession,
@@ -51,8 +93,13 @@ def update_alert(
     proj_instance: str,
     proj_region: str,
     alert_id: str,
-    # ToDo: verdict, status, idp_user_id
-) -> Dict[str, any]:
+    confidence: int,
+    reason: str,
+    reputaion: str,
+    priority: str,
+    status: str,
+    verdict: str,
+    ) -> Dict[str, any]:
   """Gets an Alert.
 
   Args:
@@ -82,15 +129,16 @@ def update_alert(
     "feedback":  {
       # "idp_user_id": "admin@dandye.altostrat.com",  # readonly
       # "create_time": string,  # readonly
-      "verdict": "FALSE_POSITIVE",  # enum (Verdict),
-      #"reputation": enum (Reputation),
-      "confidence_score": 100,
+      "confidence_score": confidence,
+      "reason": reason,
+      "reputation": reputaion,
+      "priority": priority,
+      "status": status,
+      "verdict": verdict,
       #"risk_score": integer,
       #"disregarded": boolean,
-      ##"severity": integer,
+      #"severity": integer,
       #"comment": string,
-      "status": "CLOSED", # #enum (Status),
-      #"priority": enum (Priority),
       #"root_cause": string,
       #"reason": enum (Reason),
       #"severity_display": string
@@ -121,6 +169,42 @@ if __name__ == "__main__":
       "-d", "--include-detections", type=bool, default=False,required=False,
       help="flag to include detections"
   )
+  parser.add_argument(
+      "--confidence_score",
+      type=int,
+      required=False,
+      help="confidence score (0-100) of the finding",
+  )
+  parser.add_argument(
+      "--priority",
+      choices=PRIORITY_ENUM,
+      required=True,
+      help="alert priority.",
+  )
+  parser.add_argument(
+      "--reason",
+      choices=REASON_ENUM,
+      required=True,
+      help="reason for closing an Alert",
+  )
+  parser.add_argument(
+      "--reputaion",
+      choices=REPUTATION_ENUM,
+      required=True,
+      help="A categorization of the finding as useful or not useful",
+  )
+  parser.add_argument(
+      "--status",
+      choices=STATUS_ENUM,
+      required=True,
+      help="alert status",
+  )
+  parser.add_argument(
+      "--verdict",
+      choices=VERDICT_ENUM,
+      required=True,
+      help="a verdict on whether the finding reflects a security incident",
+  )
   args = parser.parse_args()
 
   auth_session = chronicle_auth.initialize_http_session(
@@ -133,6 +217,11 @@ if __name__ == "__main__":
       args.project_instance,
       args.region,
       args.alert_id,
-      # ToDo: verdict, status, idp_user_id
+      args.confidence_score,
+      args.reason,
+      args.reputaion,
+      args.priority,
+      args.status,
+      args.verdict,
   )
   print(json.dumps(a_list, indent=2))
