@@ -277,10 +277,26 @@ if __name__ == "__main__":
   args = parser.parse_args()
 
   # Check if at least one of the specific arguments is provided
-  if not any([args.priority, args.reason, args.reputation,
-              args.status, args.verdict]):
-    parser.error("At least one of the arguments --priority, --reason, "
-                 "--reputation, --status, or --verdict is required.")
+  if not any(
+    [
+      args.confidence_score,
+      args.reason,
+      args.reputation,
+      args.priority,
+      args.status,
+      args.verdict,
+      args.risk_score,
+      args.disregarded,
+      args.severity,
+      args.comment,
+      args.root_cause,
+      args.severity_display,
+    ]
+  ):
+    parser.error("At least one of the arguments --reputation, --reason, "
+                 "--priority, --status, --verdict, --risk_score, "
+                 "--disregarded, --severity, --comment, --root_cause, or "
+                 "--severity_display is required.")
 
   auth_session = chronicle_auth.initialize_http_session(
       args.credentials_file,
