@@ -97,7 +97,7 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   parser.add_argument(
-      "--alert-id", type=str, required=True,
+      "--alert_id", type=str, required=True,
       help="identifier for the alert"
   )
   parser.add_argument(
