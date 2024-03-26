@@ -14,30 +14,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""Executable and reusable sample for appending to an existing reference list."""
+"""Executable and reusable sample for removing from a list."""
 
 import argparse
 from typing import Sequence
 
-from google.auth.transport import requests
-
 from common import chronicle_auth
 from common import regions
+
+from google.auth.transport import requests
 
 from . import get_list
 
 CHRONICLE_API_BASE_URL = "https://backstory.googleapis.com"
 
 
-def append_to_list(http_session: requests.AuthorizedSession,
-                   list_id: str,
-                   content_lines: Sequence[str]) -> str:
-  """Append to an existing reference list.
+def remove_from_list(http_session: requests.AuthorizedSession,
+                     list_id: str,
+                     content_lines: Sequence[str]) -> str:
+  """Remove items from an existing reference list.
 
   Args:
     http_session: Authorized session for HTTP requests.
     list_id: ID of existing list.
-    content_lines: Array containing each line of the list's content.
+    content_lines: Array containing items to remove from the list.
 
   Returns:
     Timestamp of when the updated list was written.
@@ -49,16 +49,12 @@ def append_to_list(http_session: requests.AuthorizedSession,
   url = f"{CHRONICLE_API_BASE_URL}/v2/lists"
 
   current_list = get_list.get_list(http_session, list_id)
-
-  seen = set(current_list)
-  deduplicated_list = [x for x in content_lines
-                        if not (x in seen or seen.add(x))]
-  content_lines = current_list + deduplicated_list
-
+  to_remove = set(content_lines)
+  updated_list = [x for x in current_list if x not in to_remove]
 
   body = {
       "name": list_id,
-      "lines": content_lines,
+      "lines": updated_list,
   }
   update_fields = ["list.lines"]
   params = {"update_mask": ",".join(update_fields)}
@@ -103,6 +99,10 @@ if __name__ == "__main__":
   args = parser.parse_args()
   CHRONICLE_API_BASE_URL = regions.url(CHRONICLE_API_BASE_URL, args.region)
   session = chronicle_auth.initialize_http_session(args.credentials_file)
-  new_list_create_time = append_to_list(session, args.name,
-                                        args.list_file.read().splitlines())
-  print(f"List successfully appended at {new_list_create_time}")
+
+  new_list_create_time = remove_from_list(
+      session, args.name,
+      args.list_file.read().splitlines()
+  )
+
+  print(f"Items successfully removed from list at {new_list_create_time}")
