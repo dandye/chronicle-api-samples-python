@@ -37,10 +37,10 @@ def append_to_list(http_session: requests.AuthorizedSession,
   Args:
     http_session: Authorized session for HTTP requests.
     list_id: ID of existing list.
-    content_lines: Array containing each line of the list's content.
+    content_lines: Iterable containing items to apend to the existing list.
 
   Returns:
-    Timestamp of when the updated list was written.
+    List update timestamp.
 
   Raises:
     requests.exceptions.HTTPError: HTTP request resulted in an error

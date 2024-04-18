@@ -37,10 +37,10 @@ def remove_from_list(http_session: requests.AuthorizedSession,
   Args:
     http_session: Authorized session for HTTP requests.
     list_id: ID of existing list.
-    content_lines: Array containing items to remove from the list.
+    content_lines: Iterable containing items to remove from the existing list.
 
   Returns:
-    Timestamp of when the updated list was written.
+    List update timestamp.
 
   Raises:
     requests.exceptions.HTTPError: HTTP request resulted in an error
