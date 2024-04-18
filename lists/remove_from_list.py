@@ -52,7 +52,6 @@ def append_to_list(http_session: requests.AuthorizedSession,
   to_remove = set(content_lines)
   updated_list = [x for x in current_list if x not in to_remove]
 
-
   body = {
       "name": list_id,
       "lines": updated_list,
