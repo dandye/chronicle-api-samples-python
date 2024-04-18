@@ -49,15 +49,13 @@ def append_to_list(http_session: requests.AuthorizedSession,
   url = f"{CHRONICLE_API_BASE_URL}/v2/lists"
 
   current_list = get_list.get_list(http_session, list_id)
+  to_remove = set(content_lines)
+  updated_list = [x for x in current_list if x not in to_remove]
 
-  seen = set(current_list)
-  deduplicated_list = [x for x in content_lines
-                       if not (x in seen or seen.add(x))]
-  content_lines = current_list + deduplicated_list
 
   body = {
       "name": list_id,
-      "lines": content_lines,
+      "lines": updated_list,
   }
   update_fields = ["list.lines"]
   params = {"update_mask": ",".join(update_fields)}
@@ -104,4 +102,5 @@ if __name__ == "__main__":
   session = chronicle_auth.initialize_http_session(args.credentials_file)
   new_list_create_time = append_to_list(session, args.name,
                                         args.list_file.read().splitlines())
-  print(f"List successfully appended at {new_list_create_time}")
+
+  print(f"Items successfully removed from list at {new_list_create_time}")

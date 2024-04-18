@@ -49,12 +49,14 @@ def remove_from_list(http_session: requests.AuthorizedSession,
   url = f"{CHRONICLE_API_BASE_URL}/v2/lists"
 
   current_list = get_list.get_list(http_session, list_id)
-  to_remove = set(content_lines)
-  updated_list = [x for x in current_list if x not in to_remove]
+  seen = set(current_list)
+  deduplicated_list = [x for x in content_lines
+                       if not (x in seen or seen.add(x))]
+  content_lines = current_list + deduplicated_list
 
   body = {
       "name": list_id,
-      "lines": updated_list,
+      "lines": content_lines,
   }
   update_fields = ["list.lines"]
   params = {"update_mask": ",".join(update_fields)}
@@ -105,4 +107,4 @@ if __name__ == "__main__":
       args.list_file.read().splitlines()
   )
 
-  print(f"Items successfully removed from list at {new_list_create_time}")
+  print(f"List successfully appended at {new_list_create_time}")
