@@ -98,136 +98,96 @@ The SDK will automatically load these values from your `.env` file. Command-line
 
 ### Command Groups
 
-#### Detection API (`detect`)
-- Alert Management (`alerts`)
-  - `get`: Get alert by ID
-  - `update`: Update an alert
+#### Detection API
+```bash
+chronicle detect <command-group> <command> [options]
+```
+
+Available command groups:
+- `alerts`
+  - `get <alert-id>`: Get alert by ID
+  - `update <alert-id>`: Update an alert
   - `bulk-update`: Bulk update alerts matching a filter
 
-- Detection Management (`detections`)
-  - `get`: Get detection by ID
-  - `list`: List detections
+- `detections`
+  - `get <detection-id>`: Get detection by ID
+  - `list [--filter <filter>]`: List detections
 
-- Rule Management (`rules`)
+- `rules`
   - `create`: Create a new rule
-  - `get`: Get rule by ID
-  - `delete`: Delete a rule
-  - `enable`: Enable a rule
-  - `list`: List rules
+  - `get <rule-id>`: Get rule by ID
+  - `delete <rule-id>`: Delete a rule
+  - `enable <rule-id>`: Enable a rule
+  - `list [--filter <filter>]`: List rules
 
-- Retrohunt Management (`retrohunts`)
+- `retrohunts`
   - `create`: Create a new retrohunt
-  - `get`: Get retrohunt by ID
+  - `get <retrohunt-id>`: Get retrohunt by ID
 
-- Error Management (`errors`)
-  - `list`: List errors
+- `errors`
+  - `list [--filter <filter>]`: List errors
 
-- Rule Set Management (`rulesets`)
+- `rulesets`
   - `batch-update`: Batch update rule set deployments
 
-#### Ingestion API (`ingestion`)
+#### Ingestion API
+```bash
+chronicle ingestion <command> [options]
+```
+
+Available commands:
 - `import-events`: Import events into Chronicle
-- `get-event`: Get event details
+- `get-event <event-id>`: Get event details
 - `batch-get-events`: Batch retrieve events
 
-#### Search API (`search`)
-- `find-asset-events`: Find events for an asset
-- `find-raw-logs`: Search raw logs
-- `find-udm-events`: Find UDM events
+#### Search API
+```bash
+chronicle search <command> [options]
+```
 
-#### Lists API (`lists`)
-- `create`: Create a new list
-- `get`: Get list by ID
-- `patch`: Update an existing list
+Available commands:
+- `find-asset-events [--filter <filter>]`: Find events for an asset
+- `find-raw-logs [--filter <filter>]`: Search raw logs
+- `find-udm-events [--filter <filter>]`: Find UDM events
+
+#### Lists API
+```bash
+chronicle lists <command> [options]
+```
+
+Available commands:
+- `create <name> [--description <desc>] --lines <json-array>`: Create a new list
+- `get <list-id>`: Get list by ID
+- `patch <list-id> [--description <desc>] [--lines-to-add <json-array>] [--lines-to-remove <json-array>]`: Update an existing list
 
 ### Examples
 
-Using command-line options:
-```bash
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg detect alerts get --alert-id id
-```
-
 Using environment variables (after setting up .env):
 ```bash
-# All common options loaded from .env file
-chronicle detect alerts get --alert-id id
-
-# Mix of .env and command-line options
-chronicle --region us-east1 detect alerts get --alert-id id
-```
-
-## SDK CLI Wrapper
-
-In addition to running individual sample scripts, you can use the unified CLI wrapper that provides access to all Chronicle APIs through a single command-line interface.
-
-### Installation
-
-Install the SDK in development mode:
-
-```shell
-pip install -e .
-```
-
-This will install the `chronicle` command-line tool.
-
-### Usage
-
-The CLI follows this general pattern:
-```shell
-chronicle [common options] COMMAND_GROUP COMMAND [command options]
-```
-
-Common options (required for all commands):
-- `--credentials-file`: Path to service account credentials file
-- `--project-id`: GCP project id or number
-- `--project-instance`: Customer ID for the Chronicle instance
-- `--region`: Region of the target project
-
-Available command groups:
-
-1. Detection API (`detect`):
-```shell
 # Get an alert
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  detect get-alert --alert-id <id>
+chronicle detect alerts get --alert-id ABC123
 
-# Get a detection
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  detect get-detection --detection-id <id>
+# Create a list
+chronicle lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]'
+
+# Search for events
+chronicle search find-raw-logs --filter "timestamp.seconds > 1600000000"
+
+# Override a specific environment variable
+chronicle --region us-central1 detect alerts get --alert-id ABC123
 ```
 
-2. Ingestion API (`ingestion`):
-```shell
-# Import events
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  ingestion import-events --json-events '<events_json>'
+## Running Individual Scripts
 
-# Get an event
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  ingestion get-event --event-id <id>
+You can also run individual API sample scripts directly. Each script supports the `-h` flag to show available options:
 
-# Batch get events
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  ingestion batch-get-events --event-ids '[<id1>,<id2>]'
+```bash
+# Get help for a specific script
+python -m detect.v1alpha.get_alert -h
+python -m search.v1alpha.find_asset_events -h
+python -m lists.v1alpha.patch_list -h
 ```
 
-3. Search API (`search`):
-```shell
-# Find asset events
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  search find-asset-events --asset-indicator <indicator> --start-time <time> --end-time <time>
+## License
 
-# Find raw logs
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  search find-raw-logs --query <query>
-
-# Find UDM events
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
-  search find-udm-events --tokens <token1> --tokens <token2>
-```
-
-For detailed help on any command:
-```shell
-chronicle --help                    # General help
-chronicle COMMAND_GROUP --help      # Help for a command group
-chronicle COMMAND_GROUP CMD --help  # Help for a specific command
+Apache 2.0 - See [LICENSE](LICENSE) for more information.
