@@ -73,11 +73,28 @@ The SDK provides a unified command-line interface for Chronicle APIs. The CLI fo
 chronicle [common options] COMMAND_GROUP COMMAND [command options]
 ```
 
-Common options required for all commands:
-- `--credentials-file`: Path to service account credentials file
-- `--project-id`: GCP project id or number
-- `--project-instance`: Chronicle instance ID (uuid with dashes)
-- `--region`: Region where the project is located
+### Common Options
+
+Common options can be provided either via command-line arguments or environment variables:
+
+| CLI Option          | Environment Variable        | Description                    |
+|--------------------|----------------------------|--------------------------------|
+| --credentials-file | CHRONICLE_CREDENTIALS_FILE | Path to service account file   |
+| --project-id       | CHRONICLE_PROJECT_ID       | GCP project id or number       |
+| --project-instance | CHRONICLE_INSTANCE         | Chronicle instance ID (uuid)   |
+| --region           | CHRONICLE_REGION           | Region where project is located|
+
+You can set these options in a `.env` file in your project root:
+
+```bash
+# .env file
+CHRONICLE_CREDENTIALS_FILE=path/to/credentials.json
+CHRONICLE_PROJECT_ID=your-project-id
+CHRONICLE_INSTANCE=your-instance-id
+CHRONICLE_REGION=your-region
+```
+
+The SDK will automatically load these values from your `.env` file. Command-line options take precedence over environment variables.
 
 ### Command Groups
 
@@ -125,19 +142,18 @@ Common options required for all commands:
 
 ### Examples
 
-Get an alert:
+Using command-line options:
 ```bash
 chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg detect alerts get --alert-id id
 ```
 
-Create a list:
+Using environment variables (after setting up .env):
 ```bash
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]'
-```
+# All common options loaded from .env file
+chronicle detect alerts get --alert-id id
 
-Search for events:
-```bash
-chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg search find-raw-logs --filter "timestamp.seconds > 1600000000"
+# Mix of .env and command-line options
+chronicle --region us-east1 detect alerts get --alert-id id
 ```
 
 ## SDK CLI Wrapper
