@@ -8,70 +8,75 @@ from dotenv import load_dotenv
 
 
 def get_env_value(key, default=None):
-    """Get value from environment variable with Chronicle prefix."""
-    return os.getenv(f"CHRONICLE_{key}", default)
+  """Get value from environment variable with Chronicle prefix."""
+  return os.getenv(f"CHRONICLE_{key}", default)
 
 
 def add_common_options(func):
-    """Add common options to a command."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Load environment variables from .env file
-        load_dotenv()
+  """Add common options to a command."""
 
-        # If options not provided via CLI, try to get from environment
-        if not kwargs.get("credentials_file"):
-            kwargs["credentials_file"] = get_env_value("CREDENTIALS_FILE")
-        if not kwargs.get("project_id"):
-            kwargs["project_id"] = get_env_value("PROJECT_ID")
-        if not kwargs.get("project_instance"):
-            kwargs["project_instance"] = get_env_value("INSTANCE")
-        if not kwargs.get("region"):
-            kwargs["region"] = get_env_value("REGION")
+  # Add CLI options first
+  @click.option(
+      "--region",
+      required=False,
+      help="Region in which the target project is located. Can also be set via CHRONICLE_REGION env var.",
+  )
+  @click.option(
+      "--project-instance",
+      required=False,
+      help="Customer ID (uuid with dashes) for the Chronicle instance. Can also be set via CHRONICLE_INSTANCE env var.",
+  )
+  @click.option(
+      "--project-id",
+      required=False,
+      help="GCP project id or number. Can also be set via CHRONICLE_PROJECT_ID env var.",
+  )
+  @click.option(
+      "--credentials-file",
+      required=False,
+      help="Path to service account credentials file. Can also be set via CHRONICLE_CREDENTIALS_FILE env var.",
+  )
+  @click.option(
+      "--env-file",
+      required=False,
+      help="Path to .env file containing configuration variables.",
+  )
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    # Load environment variables from .env file
+    env_file = kwargs.pop("env_file", None)
+    if env_file:
+      load_dotenv(env_file)
+    else:
+      load_dotenv()
 
-        return func(*args, **kwargs)
+    # Now validate required options
+    missing = []
+    if not kwargs.get("credentials_file") and not get_env_value("CREDENTIALS_FILE"):
+      missing.append("credentials-file (or CHRONICLE_CREDENTIALS_FILE)")
+    if not kwargs.get("project_id") and not get_env_value("PROJECT_ID"):
+      missing.append("project-id (or CHRONICLE_PROJECT_ID)")
+    if not kwargs.get("project_instance") and not get_env_value("INSTANCE"):
+      missing.append("project-instance (or CHRONICLE_INSTANCE)")
+    if not kwargs.get("region") and not get_env_value("REGION"):
+      missing.append("region (or CHRONICLE_REGION)")
 
-    # Add CLI options
-    wrapper = click.option(
-        "--credentials-file",
-        required=False,
-        help="Path to service account credentials file. Can also be set via CHRONICLE_CREDENTIALS_FILE env var.",
-    )(wrapper)
-    wrapper = click.option(
-        "--project-id",
-        required=False,
-        help="GCP project id or number. Can also be set via CHRONICLE_PROJECT_ID env var.",
-    )(wrapper)
-    wrapper = click.option(
-        "--project-instance",
-        required=False,
-        help="Customer ID (uuid with dashes) for the Chronicle instance. Can also be set via CHRONICLE_INSTANCE env var.",
-    )(wrapper)
-    wrapper = click.option(
-        "--region",
-        required=False,
-        help="Region in which the target project is located. Can also be set via CHRONICLE_REGION env var.",
-    )(wrapper)
+    if missing:
+      raise click.UsageError(
+          f"Missing required options: {', '.join(missing)}\n"
+          "These can be provided via command line options or environment variables."
+      )
 
-    # Ensure required options are provided either via CLI or environment
-    @wraps(wrapper)
-    def validate_options(*args, **kwargs):
-        missing = []
-        if not kwargs.get("credentials_file"):
-            missing.append("credentials-file (or CHRONICLE_CREDENTIALS_FILE)")
-        if not kwargs.get("project_id"):
-            missing.append("project-id (or CHRONICLE_PROJECT_ID)")
-        if not kwargs.get("project_instance"):
-            missing.append("project-instance (or CHRONICLE_INSTANCE)")
-        if not kwargs.get("region"):
-            missing.append("region (or CHRONICLE_REGION)")
+    # If options not provided via CLI, get from environment
+    if not kwargs.get("credentials_file"):
+      kwargs["credentials_file"] = get_env_value("CREDENTIALS_FILE")
+    if not kwargs.get("project_id"):
+      kwargs["project_id"] = get_env_value("PROJECT_ID")
+    if not kwargs.get("project_instance"):
+      kwargs["project_instance"] = get_env_value("INSTANCE")
+    if not kwargs.get("region"):
+      kwargs["region"] = get_env_value("REGION")
 
-        if missing:
-            raise click.UsageError(
-                f"Missing required options: {', '.join(missing)}\n"
-                "These can be provided via command line options or environment variables."
-            )
+    return func(*args, **kwargs)
 
-        return wrapper(*args, **kwargs)
-
-    return validate_options
+  return wrapper
