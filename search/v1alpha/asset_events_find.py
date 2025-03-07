@@ -43,16 +43,15 @@ DEFAULT_MAX_RESULTS = 10000
 MAX_RESULTS_LIMIT = 250000
 
 
-def find_asset_events(
-    http_session: requests.AuthorizedSession,
-    proj_id: str,
-    proj_instance: str,
-    proj_region: str,
-    asset_indicator: str,
-    start_time: str,
-    end_time: str,
-    reference_time: Optional[str] = None,
-    max_results: Optional[int] = None) -> None:
+def find_asset_events(http_session: requests.AuthorizedSession,
+                      proj_id: str,
+                      proj_instance: str,
+                      proj_region: str,
+                      asset_indicator: str,
+                      start_time: str,
+                      end_time: str,
+                      reference_time: Optional[str] = None,
+                      max_results: Optional[int] = None) -> None:
     """Find asset events in Chronicle using the Legacy Find Asset Events API.
 
     Args:
@@ -75,32 +74,31 @@ def find_asset_events(
     chronicle.legacies.legacyFindAssetEvents
     """
     # Validate and parse the times to ensure they're in RFC3339 format
-    for time_str in [start_time, end_time, reference_time] if reference_time else [start_time, end_time]:
+    for time_str in [start_time, end_time, reference_time
+                    ] if reference_time else [start_time, end_time]:
         try:
             datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
         except ValueError as e:
             if "does not match format" in str(e):
                 raise ValueError(
-                    f"Time '{time_str}' must be in RFC3339 format (e.g., '2024-01-01T00:00:00Z')") from e
+                    f"Time '{time_str}' must be in RFC3339 format (e.g., '2024-01-01T00:00:00Z')"
+                ) from e
             raise
 
     base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL,
-        proj_region
-    )
+        CHRONICLE_API_BASE_URL, proj_region)
     instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
     url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindAssetEvents"
 
     # Build query parameters
     params = [
         f"assetIndicator={asset_indicator}",
-        f"timeRange.startTime={start_time}",
-        f"timeRange.endTime={end_time}"
+        f"timeRange.startTime={start_time}", f"timeRange.endTime={end_time}"
     ]
-    
+
     if reference_time:
         params.append(f"referenceTime={reference_time}")
-    
+
     if max_results:
         # Ensure max_results is within bounds
         max_results = min(max(1, max_results), MAX_RESULTS_LIMIT)
@@ -112,13 +110,15 @@ def find_asset_events(
     if response.status_code >= 400:
         print(response.text)
     response.raise_for_status()
-    
+
     result = response.json()
     print(json.dumps(result, indent=2))
-    
+
     if result.get("more_data_available"):
-        print("\nWarning: More data is available but was not returned due to maxResults limit.")
-    
+        print(
+            "\nWarning: More data is available but was not returned due to maxResults limit."
+        )
+
     if result.get("uri"):
         print("\nBackstory UI URLs:")
         for uri in result["uri"]:
@@ -137,7 +137,9 @@ if __name__ == "__main__":
         "--asset_indicator",
         type=str,
         required=True,
-        help="JSON string containing the asset indicator (e.g., '{\"hostname\": \"example.com\"}')")
+        help=
+        "JSON string containing the asset indicator (e.g., '{\"hostname\": \"example.com\"}')"
+    )
     parser.add_argument(
         "--start_time",
         type=str,
@@ -155,7 +157,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--max_results",
         type=int,
-        help=f"Maximum number of results to return (default: {DEFAULT_MAX_RESULTS}, max: {MAX_RESULTS_LIMIT})")
+        help=
+        f"Maximum number of results to return (default: {DEFAULT_MAX_RESULTS}, max: {MAX_RESULTS_LIMIT})"
+    )
 
     args = parser.parse_args()
 
@@ -163,13 +167,6 @@ if __name__ == "__main__":
         args.credentials_file,
         SCOPES,
     )
-    find_asset_events(
-        auth_session,
-        args.project_id,
-        args.project_instance,
-        args.region,
-        args.asset_indicator,
-        args.start_time,
-        args.end_time,
-        args.reference_time,
-        args.max_results)
+    find_asset_events(auth_session, args.project_id, args.project_instance,
+                      args.region, args.asset_indicator, args.start_time,
+                      args.end_time, args.reference_time, args.max_results)

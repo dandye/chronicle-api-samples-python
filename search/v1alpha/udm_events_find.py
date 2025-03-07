@@ -49,20 +49,19 @@ from common import regions
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-  "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 
-def find_udm_events(
-    http_session: requests.AuthorizedSession,
-    proj_id: str,
-    proj_instance: str,
-    proj_region: str,
-    tokens: Optional[List[str]] = None,
-    event_ids: Optional[List[str]] = None,
-    return_unenriched_data: bool = False,
-    return_all_events_for_log: bool = False) -> None:
-  """Find UDM events in Chronicle using the Legacy Find UDM Events API.
+def find_udm_events(http_session: requests.AuthorizedSession,
+                    proj_id: str,
+                    proj_instance: str,
+                    proj_region: str,
+                    tokens: Optional[List[str]] = None,
+                    event_ids: Optional[List[str]] = None,
+                    return_unenriched_data: bool = False,
+                    return_all_events_for_log: bool = False) -> None:
+    """Find UDM events in Chronicle using the Legacy Find UDM Events API.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -82,82 +81,76 @@ def find_udm_events(
   Requires the following IAM permission on the parent resource:
   chronicle.events.batchGet
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      proj_region
-  )
-  instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindUdmEvents"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, proj_region)
+    instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindUdmEvents"
 
-  # Build query parameters
-  params = []
-  if tokens and not event_ids:  # event_ids take precedence over tokens
-    for token in tokens:
-      params.append(f"tokens={token}")
-  if event_ids:
-    for event_id in event_ids:
-      params.append(f"ids={event_id}")
-  if return_unenriched_data:
-    params.append("returnUnenrichedData=true")
-  if return_all_events_for_log:
-    params.append("returnAllEventsForLog=true")
+    # Build query parameters
+    params = []
+    if tokens and not event_ids:  # event_ids take precedence over tokens
+        for token in tokens:
+            params.append(f"tokens={token}")
+    if event_ids:
+        for event_id in event_ids:
+            params.append(f"ids={event_id}")
+    if return_unenriched_data:
+        params.append("returnUnenrichedData=true")
+    if return_all_events_for_log:
+        params.append("returnAllEventsForLog=true")
 
-  if params:
-    url = f"{url}?{'&'.join(params)}"
+    if params:
+        url = f"{url}?{'&'.join(params)}"
 
-  response = http_session.request("GET", url)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  
-  print(json.dumps(response.json(), indent=2))
+    response = http_session.request("GET", url)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+
+    print(json.dumps(response.json(), indent=2))
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  # common
-  chronicle_auth.add_argument_credentials_file(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  regions.add_argument_region(parser)
-  # local
-  parser.add_argument(
-      "--tokens",
-      type=str,
-      help='JSON string containing a list of tokens (e.g., \'["token1", "token2"]\')')
-  parser.add_argument(
-      "--event_ids",
-      type=str,
-      help='JSON string containing a list of event IDs (e.g., \'["id1", "id2"]\')')
-  parser.add_argument(
-      "--return_unenriched_data",
-      action="store_true",
-      help="Whether to return unenriched data")
-  parser.add_argument(
-      "--return_all_events_for_log",
-      action="store_true",
-      help="Whether to return all events generated from the ingested log")
+    parser = argparse.ArgumentParser()
+    # common
+    chronicle_auth.add_argument_credentials_file(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    regions.add_argument_region(parser)
+    # local
+    parser.add_argument(
+        "--tokens",
+        type=str,
+        help=
+        'JSON string containing a list of tokens (e.g., \'["token1", "token2"]\')'
+    )
+    parser.add_argument(
+        "--event_ids",
+        type=str,
+        help=
+        'JSON string containing a list of event IDs (e.g., \'["id1", "id2"]\')')
+    parser.add_argument("--return_unenriched_data",
+                        action="store_true",
+                        help="Whether to return unenriched data")
+    parser.add_argument(
+        "--return_all_events_for_log",
+        action="store_true",
+        help="Whether to return all events generated from the ingested log")
 
-  args = parser.parse_args()
-  
-  # Convert JSON strings to lists if provided
-  tokens_list = json.loads(args.tokens) if args.tokens else None
-  event_ids_list = json.loads(args.event_ids) if args.event_ids else None
-  
-  # Validate that at least one of tokens or event_ids is provided
-  if not tokens_list and not event_ids_list:
-    parser.error("At least one of --tokens or --event_ids must be provided")
+    args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES,
-  )
-  find_udm_events(
-      auth_session,
-      args.project_id,
-      args.project_instance,
-      args.region,
-      tokens_list,
-      event_ids_list,
-      args.return_unenriched_data,
-      args.return_all_events_for_log)
+    # Convert JSON strings to lists if provided
+    tokens_list = json.loads(args.tokens) if args.tokens else None
+    event_ids_list = json.loads(args.event_ids) if args.event_ids else None
+
+    # Validate that at least one of tokens or event_ids is provided
+    if not tokens_list and not event_ids_list:
+        parser.error("At least one of --tokens or --event_ids must be provided")
+
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file,
+        SCOPES,
+    )
+    find_udm_events(auth_session, args.project_id, args.project_instance,
+                    args.region, tokens_list, event_ids_list,
+                    args.return_unenriched_data, args.return_all_events_for_log)
