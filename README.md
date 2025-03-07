@@ -66,7 +66,24 @@ python -m lists.v1alpha.get_list -h
 python -m lists.v1alpha.patch_list -h
 ```
 
-## Using the SDK CLI Wrapper
+## Installing the Chronicle REST API SDK
+
+Install the SDK from source
+```
+python setup.py install
+```
+
+Alternatively, install the SDK from source using make
+```
+make install
+```
+
+Build the wheel file
+```
+make dist
+```
+
+## Using the Chronicle REST API SDK
 
 The SDK provides a unified command-line interface for Chronicle APIs. The CLI follows this pattern:
 ```
@@ -94,7 +111,9 @@ CHRONICLE_INSTANCE=your-instance-id
 CHRONICLE_REGION=your-region
 ```
 
-The SDK will automatically load these values from your `.env` file. Command-line options take precedence over environment variables.
+The SDK will use values from the `.env` file provided with the  --env-file flag.
+(It has trouble finding your local .env due to SDK Path issues, which we are working to resolve.)
+ Command-line options take precedence over environment variables.
 
 ### Command Groups
 
@@ -165,16 +184,16 @@ Available commands:
 Using environment variables (after setting up .env):
 ```bash
 # Get an alert
-chronicle detect alerts get --alert-id ABC123
+chronicle detect alerts get --alert-id ABC123 --env-file=.env
 
 # Create a list
-chronicle lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]'
+chronicle lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]' --env-file=.env
 
 # Search for events
-chronicle search find-raw-logs --filter "timestamp.seconds > 1600000000"
+chronicle search find-raw-logs --filter "timestamp.seconds > 1600000000" --env-file=.env
 
 # Override a specific environment variable
-chronicle --region us-central1 detect alerts get --alert-id ABC123
+chronicle --region us-central1 detect alerts get --alert-id ABC123 --env-file=.env
 ```
 
 ## Running Individual Scripts
