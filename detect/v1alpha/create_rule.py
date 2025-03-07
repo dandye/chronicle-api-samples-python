@@ -14,42 +14,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-r"""Executable and reusable sample for creating a detection rule.
+# pylint: disable=line-too-long
+r"""Executable and reusable v1alpha API sample for creating a detection rule.
 
-Sample Commands (run from api_samples_python dir):
-    # From file
-    python3 -m detect.v1alpha.create_rule \
-        --region $region \
-        --project_instance $project_instance \
-        --project_id $PROJECT_ID \
-        --rule_file=./path/to/rule/rulename.yaral
+Usage:
+  python -m detect.v1alpha.create_rule \
+    --project_id=<PROJECT_ID> \
+    --project_instance=<PROJECT_INSTANCE> \
+    --region=<REGION> \
+    --rule_file=./path/to/rule/rulename.yaral
 
-    # From stdin
-    cat ./path/rulename.yaral | python3 -m detect.v1alpha.create_rule \
-        --region $region \
-        --project_instance $project_instance \
-        --project_id $PROJECT_ID \
-        --rule_file -
+  # Or from stdin:
+  cat ./path/rulename.yaral | python -m detect.v1alpha.create_rule \
+    --project_id=<PROJECT_ID> \
+    --project_instance=<PROJECT_INSTANCE> \
+    --region=<REGION> \
+    --rule_file=-
 
 API reference:
-  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules/create
-  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules#Rule
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules/create
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules#Rule
 """
+# pylint: enable=line-too-long
 
 import argparse
 import json
 from typing import Any, Mapping
 
+from google.auth.transport import requests
+
 from common import chronicle_auth
 from common import project_id
 from common import project_instance
 from common import regions
-from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
-
 SCOPES = [
-    "https://www.googleapis.com/auth/cloud-platform",
+  "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 
@@ -70,17 +71,19 @@ def create_rule(
     rule_file_path: Content of the new detection rule, used to evaluate logs.
 
   Returns:
-    New detection rule.
+    Dictionary containing the newly created detection rule.
 
   Raises:
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
+
+  Requires the following IAM permission on the parent resource:
+  chronicle.rules.create
   """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL,
-      args.region
+      proj_region
   )
-  # pylint: disable-next=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/rules"
 
@@ -88,11 +91,11 @@ def create_rule(
       "text": rule_file_path.read(),
   }
 
-  # See API reference links at top of this file, for response format.
   response = http_session.request("POST", url, json=body)
   if response.status_code >= 400:
     print(response.text)
   response.raise_for_status()
+  
   return response.json()
 
 
@@ -105,21 +108,23 @@ if __name__ == "__main__":
   regions.add_argument_region(parser)
   # local
   parser.add_argument(
-      "-f",
       "--rule_file",
       type=argparse.FileType("r"),
       required=True,
-      help="path of a file with the desired rule's content, or - for STDIN",
+      help="Path to file containing the rule content, or - for STDIN"
   )
+
   args = parser.parse_args()
 
   auth_session = chronicle_auth.initialize_http_session(
       args.credentials_file,
       SCOPES
   )
-  new_rule = create_rule(auth_session,
-                         args.project_id,
-                         args.project_instance,
-                         args.region,
-                         args.rule_file)
+  new_rule = create_rule(
+      auth_session,
+      args.project_id,
+      args.project_instance,
+      args.region,
+      args.rule_file
+  )
   print(json.dumps(new_rule, indent=2))
