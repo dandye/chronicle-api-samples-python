@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Setup configuration for Chronicle API SDK."""
 
 from setuptools import find_packages, setup
@@ -32,9 +31,7 @@ setup(
         "python-dotenv>=1.0.0",
     ],
     entry_points={
-        "console_scripts": [
-            "chronicle=sdk.cli:cli",
-        ],
+        "console_scripts": ["chronicle=sdk.cli:cli",],
     },
     python_requires=">=3.7",
 )
