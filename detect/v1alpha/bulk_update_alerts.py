@@ -43,12 +43,11 @@ https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/Noun#Verdict
 import argparse
 import json
 
-from google.auth.transport import requests
-
 from common import chronicle_auth
 from common import project_id
 from common import project_instance
 from common import regions
+from google.auth.transport import requests
 
 from . import update_alert
 

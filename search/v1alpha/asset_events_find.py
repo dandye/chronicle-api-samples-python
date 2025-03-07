@@ -23,16 +23,16 @@ https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.location
 # pylint: enable=line-too-long
 
 import argparse
+from datetime import datetime
+from datetime import timezone
 import json
-from datetime import datetime, timezone
 from typing import Optional
-
-from google.auth.transport import requests
 
 from common import chronicle_auth
 from common import project_id
 from common import project_instance
 from common import regions
+from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [

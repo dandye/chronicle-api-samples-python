@@ -8,12 +8,31 @@ from dotenv import load_dotenv
 
 
 def get_env_value(key, default=None):
-  """Get value from environment variable with Chronicle prefix."""
+  """Gets value from environment variable with Chronicle prefix.
+
+  Args:
+    key: The environment variable key (without CHRONICLE_ prefix).
+    default: Default value if environment variable is not set.
+
+  Returns:
+    The value of the environment variable or the default value.
+  """
   return os.getenv(f"CHRONICLE_{key}", default)
 
 
 def add_common_options(func):
-  """Add common options to a command."""
+  """Adds common CLI options to a command.
+
+  Adds standard Chronicle CLI options for region, project instance, project ID,
+  credentials file, and environment file. Values can be provided via command line
+  arguments or environment variables.
+
+  Args:
+    func: The function to wrap with common options.
+
+  Returns:
+    A decorated function that includes common Chronicle CLI options.
+  """
 
   # Add CLI options first
   @click.option(
@@ -49,7 +68,7 @@ def add_common_options(func):
       load_dotenv(env_file)
     else:
       # Look for .env in the current working directory
-      cwd_env = os.path.join(os.getcwd(), '.env')
+      cwd_env = os.path.join(os.getcwd(), ".env")
       load_dotenv(cwd_env)
 
     # Now validate required options

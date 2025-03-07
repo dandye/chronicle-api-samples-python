@@ -26,12 +26,11 @@ import argparse
 import base64
 import json
 
-from google.auth.transport import requests
-
 from common import chronicle_auth
 from common import project_id
 from common import project_instance
 from common import regions
+from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
