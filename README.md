@@ -60,8 +60,84 @@ python3 -m lists.<sample_name> -h
 
 ### Lists API v1alpha
 
-```
+```shell
 python -m lists.v1alpha.create_list -h
 python -m lists.v1alpha.get_list -h
 python -m lists.v1alpha.patch_list -h
 ```
+
+## SDK CLI Wrapper
+
+In addition to running individual sample scripts, you can use the unified CLI wrapper that provides access to all Chronicle APIs through a single command-line interface.
+
+### Installation
+
+Install the SDK in development mode:
+
+```shell
+pip install -e .
+```
+
+This will install the `chronicle` command-line tool.
+
+### Usage
+
+The CLI follows this general pattern:
+```shell
+chronicle [common options] COMMAND_GROUP COMMAND [command options]
+```
+
+Common options (required for all commands):
+- `--credentials-file`: Path to service account credentials file
+- `--project-id`: GCP project id or number
+- `--project-instance`: Customer ID for the Chronicle instance
+- `--region`: Region of the target project
+
+Available command groups:
+
+1. Detection API (`detect`):
+```shell
+# Get an alert
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  detect get-alert --alert-id <id>
+
+# Get a detection
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  detect get-detection --detection-id <id>
+```
+
+2. Ingestion API (`ingestion`):
+```shell
+# Import events
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  ingestion import-events --json-events '<events_json>'
+
+# Get an event
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  ingestion get-event --event-id <id>
+
+# Batch get events
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  ingestion batch-get-events --event-ids '[<id1>,<id2>]'
+```
+
+3. Search API (`search`):
+```shell
+# Find asset events
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  search find-asset-events --asset-indicator <indicator> --start-time <time> --end-time <time>
+
+# Find raw logs
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  search find-raw-logs --query <query>
+
+# Find UDM events
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg \
+  search find-udm-events --tokens <token1> --tokens <token2>
+```
+
+For detailed help on any command:
+```shell
+chronicle --help                    # General help
+chronicle COMMAND_GROUP --help      # Help for a command group
+chronicle COMMAND_GROUP CMD --help  # Help for a specific command

@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: chronicle-api
+Version: 0.1.0
+Summary: Chronicle API SDK and CLI
+Author: Google LLC
+Author-email: chronicle-support@google.com
+Requires-Python: >=3.7
+License-File: LICENSE
