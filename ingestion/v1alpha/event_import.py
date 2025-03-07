@@ -32,6 +32,7 @@ from common import project_id
 from common import project_instance
 from common import regions
 
+CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
@@ -59,8 +60,12 @@ def import_events(
     Requires the following IAM permission on the parent resource:
     chronicle.events.import
     """
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL,
+        proj_region
+    )
     parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"https://{proj_region}-chronicle.googleapis.com/v1alpha/{parent}/events:import"
+    url = f"{base_url_with_region}/v1alpha/{parent}/events:import"
     
     body = {
         "events": json.loads(json_events),

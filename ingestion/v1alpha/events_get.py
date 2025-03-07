@@ -32,6 +32,7 @@ from common import project_id
 from common import project_instance
 from common import regions
 
+CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
@@ -61,8 +62,12 @@ def get_event(
     """
     # URL encode the event_id in Base64
     encoded_event_id = base64.urlsafe_b64encode(event_id.encode()).decode()
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL,
+        proj_region
+    )
     name = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}/events/{encoded_event_id}"
-    url = f"https://{proj_region}-chronicle.googleapis.com/v1alpha/{name}"
+    url = f"{base_url_with_region}/v1alpha/{name}"
 
     response = http_session.request("GET", url)
     if response.status_code >= 400:

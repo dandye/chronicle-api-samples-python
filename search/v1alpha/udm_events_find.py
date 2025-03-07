@@ -33,6 +33,7 @@ from common import project_id
 from common import project_instance
 from common import regions
 
+CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
@@ -64,11 +65,15 @@ def find_udm_events(
         requests.exceptions.HTTPError: HTTP request resulted in an error
             (response.status_code >= 400).
 
-    Requires the following IAM permission on the instance resource:
-    chronicle.legacies.legacyFindUdmEvents
+    Requires the following IAM permission on the parent resource:
+    chronicle.events.batchGet
     """
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL,
+        proj_region
+    )
     instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"https://{proj_region}-chronicle.googleapis.com/v1alpha/{instance}/legacy:legacyFindUdmEvents"
+    url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindUdmEvents"
 
     # Build query parameters
     params = []
