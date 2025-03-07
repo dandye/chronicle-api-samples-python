@@ -23,6 +23,7 @@ import click
 
 from sdk.commands import detect
 from sdk.commands import ingestion
+from sdk.commands import lists
 from sdk.commands import search
 
 
@@ -55,7 +56,7 @@ def add_common_options(func):
 def cli():
     """Chronicle API Command Line Interface.
 
-    This CLI provides access to Chronicle's detection, ingestion, and search APIs.
+    This CLI provides access to Chronicle's detection, ingestion, search, and lists APIs.
     """
     pass
 
@@ -63,6 +64,7 @@ def cli():
 # Add command groups
 cli.add_command(detect.detect)
 cli.add_command(ingestion.ingestion)
+cli.add_command(lists.lists)
 cli.add_command(search.search)
 
 

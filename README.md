@@ -66,6 +66,80 @@ python -m lists.v1alpha.get_list -h
 python -m lists.v1alpha.patch_list -h
 ```
 
+## Using the SDK CLI Wrapper
+
+The SDK provides a unified command-line interface for Chronicle APIs. The CLI follows this pattern:
+```
+chronicle [common options] COMMAND_GROUP COMMAND [command options]
+```
+
+Common options required for all commands:
+- `--credentials-file`: Path to service account credentials file
+- `--project-id`: GCP project id or number
+- `--project-instance`: Chronicle instance ID (uuid with dashes)
+- `--region`: Region where the project is located
+
+### Command Groups
+
+#### Detection API (`detect`)
+- Alert Management (`alerts`)
+  - `get`: Get alert by ID
+  - `update`: Update an alert
+  - `bulk-update`: Bulk update alerts matching a filter
+
+- Detection Management (`detections`)
+  - `get`: Get detection by ID
+  - `list`: List detections
+
+- Rule Management (`rules`)
+  - `create`: Create a new rule
+  - `get`: Get rule by ID
+  - `delete`: Delete a rule
+  - `enable`: Enable a rule
+  - `list`: List rules
+
+- Retrohunt Management (`retrohunts`)
+  - `create`: Create a new retrohunt
+  - `get`: Get retrohunt by ID
+
+- Error Management (`errors`)
+  - `list`: List errors
+
+- Rule Set Management (`rulesets`)
+  - `batch-update`: Batch update rule set deployments
+
+#### Ingestion API (`ingestion`)
+- `import-events`: Import events into Chronicle
+- `get-event`: Get event details
+- `batch-get-events`: Batch retrieve events
+
+#### Search API (`search`)
+- `find-asset-events`: Find events for an asset
+- `find-raw-logs`: Search raw logs
+- `find-udm-events`: Find UDM events
+
+#### Lists API (`lists`)
+- `create`: Create a new list
+- `get`: Get list by ID
+- `patch`: Update an existing list
+
+### Examples
+
+Get an alert:
+```bash
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg detect alerts get --alert-id id
+```
+
+Create a list:
+```bash
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]'
+```
+
+Search for events:
+```bash
+chronicle --credentials-file creds.json --project-id proj --project-instance inst --region reg search find-raw-logs --filter "timestamp.seconds > 1600000000"
+```
+
 ## SDK CLI Wrapper
 
 In addition to running individual sample scripts, you can use the unified CLI wrapper that provides access to all Chronicle APIs through a single command-line interface.
