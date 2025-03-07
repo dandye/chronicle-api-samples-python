@@ -48,7 +48,9 @@ def add_common_options(func):
     if env_file:
       load_dotenv(env_file)
     else:
-      load_dotenv()
+      # Look for .env in the current working directory
+      cwd_env = os.path.join(os.getcwd(), '.env')
+      load_dotenv(cwd_env)
 
     # Now validate required options
     missing = []

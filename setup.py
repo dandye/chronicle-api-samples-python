@@ -29,6 +29,7 @@ setup(
         "click>=8.0.0",
         "google-auth>=2.0.0",
         "requests>=2.25.0",
+        "python-dotenv>=1.0.0",
     ],
     entry_points={
         "console_scripts": [
