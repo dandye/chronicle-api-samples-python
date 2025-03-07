@@ -50,7 +50,7 @@ from common import regions
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-  "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 
@@ -61,7 +61,7 @@ def create_rule(
     proj_region: str,
     rule_file_path: str,
 ) -> Mapping[str, Any]:
-  """Creates a new detection rule to find matches in logs.
+    """Creates a new detection rule to find matches in logs.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -80,51 +80,41 @@ def create_rule(
   Requires the following IAM permission on the parent resource:
   chronicle.rules.create
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      proj_region
-  )
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/rules"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, proj_region)
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/rules"
 
-  body = {
-      "text": rule_file_path.read(),
-  }
+    body = {
+        "text": rule_file_path.read(),
+    }
 
-  response = http_session.request("POST", url, json=body)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  
-  return response.json()
+    response = http_session.request("POST", url, json=body)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  # common
-  chronicle_auth.add_argument_credentials_file(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  regions.add_argument_region(parser)
-  # local
-  parser.add_argument(
-      "--rule_file",
-      type=argparse.FileType("r"),
-      required=True,
-      help="Path to file containing the rule content, or - for STDIN"
-  )
+    parser = argparse.ArgumentParser()
+    # common
+    chronicle_auth.add_argument_credentials_file(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    regions.add_argument_region(parser)
+    # local
+    parser.add_argument(
+        "--rule_file",
+        type=argparse.FileType("r"),
+        required=True,
+        help="Path to file containing the rule content, or - for STDIN")
 
-  args = parser.parse_args()
+    args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  new_rule = create_rule(
-      auth_session,
-      args.project_id,
-      args.project_instance,
-      args.region,
-      args.rule_file
-  )
-  print(json.dumps(new_rule, indent=2))
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    new_rule = create_rule(auth_session, args.project_id, args.project_instance,
+                           args.region, args.rule_file)
+    print(json.dumps(new_rule, indent=2))

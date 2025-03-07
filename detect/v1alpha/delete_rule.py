@@ -49,7 +49,7 @@ def delete_rule(
     proj_instance: str,
     rule_id: str,
 ) -> Mapping[str, Any]:
-  """Deletes a rule.
+    """Deletes a rule.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -65,49 +65,44 @@ def delete_rule(
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      args.region
-  )
-  # pylint: disable-next=line-too-long
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, args.region)
+    # pylint: disable-next=line-too-long
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
 
-  # See API reference links at top of this file, for response format.
-  response = http_session.request("DELETE", url)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  return response.json()
+    # See API reference links at top of this file, for response format.
+    response = http_session.request("DELETE", url)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  chronicle_auth.add_argument_credentials_file(parser)
-  regions.add_argument_region(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  parser.add_argument(
-      "-rid",
-      "--rule_id",
-      type=str,
-      required=True,
-      help='ID of rule to be deleted. In the form of "ru_<UUID>"',
-  )
-  args = parser.parse_args()
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  print(
-      json.dumps(
-          delete_rule(
-              auth_session,
-              args.region,
-              args.project_id,
-              args.project_instance,
-              args.rule_id,
-          ),
-          indent=2,
-      )
-  )
+    parser = argparse.ArgumentParser()
+    chronicle_auth.add_argument_credentials_file(parser)
+    regions.add_argument_region(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    parser.add_argument(
+        "-rid",
+        "--rule_id",
+        type=str,
+        required=True,
+        help='ID of rule to be deleted. In the form of "ru_<UUID>"',
+    )
+    args = parser.parse_args()
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    print(
+        json.dumps(
+            delete_rule(
+                auth_session,
+                args.region,
+                args.project_id,
+                args.project_instance,
+                args.rule_id,
+            ),
+            indent=2,
+        ))

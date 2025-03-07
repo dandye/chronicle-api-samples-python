@@ -56,7 +56,7 @@ def list_errors(
     proj_instance: str,
     rule_id: str,
 ) -> Mapping[str, Any]:
-  """Listing errors for rules.
+    """Listing errors for rules.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -73,60 +73,54 @@ def list_errors(
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      args.region
-  )
-  # pylint: disable-next=line-too-long
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/ruleExecutionErrors"
-  rule_filter = (
-      "rule ="
-      f' "projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}/rules/{rule_id}"'
-  )
-  params = {
-      "filter": rule_filter,
-  }
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, args.region)
+    # pylint: disable-next=line-too-long
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/ruleExecutionErrors"
+    rule_filter = (
+        "rule ="
+        f' "projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}/rules/{rule_id}"'
+    )
+    params = {
+        "filter": rule_filter,
+    }
 
-  # See API reference links at top of this file, for response format.
-  response = http_session.request("GET", url, params=params)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  return response.json()
+    # See API reference links at top of this file, for response format.
+    response = http_session.request("GET", url, params=params)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  chronicle_auth.add_argument_credentials_file(parser)
-  regions.add_argument_region(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  parser.add_argument(
-      "-rid",
-      "--rule_id",
-      type=str,
-      required=True,
-      help=(
-          "rule id to list errors for. Options are (1) rule_id (2)"
-          " rule_id@v_<seconds>_<nanoseconds> (3) rule_id@- which matches on"
-          " all versions."
-      ),
-  )
-  args = parser.parse_args()
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  print(
-      json.dumps(
-          list_errors(
-              auth_session,
-              args.region,
-              args.project_id,
-              args.project_instance,
-              args.rule_id,
-          ),
-          indent=2,
-      )
-  )
+    parser = argparse.ArgumentParser()
+    chronicle_auth.add_argument_credentials_file(parser)
+    regions.add_argument_region(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    parser.add_argument(
+        "-rid",
+        "--rule_id",
+        type=str,
+        required=True,
+        help=(
+            "rule id to list errors for. Options are (1) rule_id (2)"
+            " rule_id@v_<seconds>_<nanoseconds> (3) rule_id@- which matches on"
+            " all versions."),
+    )
+    args = parser.parse_args()
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    print(
+        json.dumps(
+            list_errors(
+                auth_session,
+                args.region,
+                args.project_id,
+                args.project_instance,
+                args.rule_id,
+            ),
+            indent=2,
+        ))

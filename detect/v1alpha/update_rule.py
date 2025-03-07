@@ -56,7 +56,7 @@ def update_rule(
     rule_id: str,
     rule_file_path: str,
 ) -> Mapping[str, Any]:
-  """Updates a rule.
+    """Updates a rule.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -73,62 +73,57 @@ def update_rule(
       (response.status_code >= 400).
 
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      args.region
-  )
-  # pylint: disable-next=line-too-long
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, args.region)
+    # pylint: disable-next=line-too-long
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
 
-  body = {
-      "text": rule_file_path.read(),
-  }
-  params = {"update_mask": "text"}
+    body = {
+        "text": rule_file_path.read(),
+    }
+    params = {"update_mask": "text"}
 
-  # See API reference links at top of this file, for response format.
-  response = http_session.request("PATCH", url, params=params, json=body)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  return response.json()
+    # See API reference links at top of this file, for response format.
+    response = http_session.request("PATCH", url, params=params, json=body)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  chronicle_auth.add_argument_credentials_file(parser)
-  regions.add_argument_region(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  parser.add_argument(
-      "-rid",
-      "--rule_id",
-      type=str,
-      required=True,
-      help='ID of the rule to be updated. In the form of "ru_<UUID>"',
-  )
-  parser.add_argument(
-      "-f",
-      "--rule_file",
-      type=argparse.FileType("r"),
-      required=True,
-      help="path of a file with the desired rule's content, or - for STDIN",
-  )
-  args = parser.parse_args()
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  print(
-      json.dumps(
-          update_rule(
-              auth_session,
-              args.region,
-              args.project_id,
-              args.project_instance,
-              args.rule_id,
-              args.rule_file,
-          ),
-          indent=2,
-      )
-  )
+    parser = argparse.ArgumentParser()
+    chronicle_auth.add_argument_credentials_file(parser)
+    regions.add_argument_region(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    parser.add_argument(
+        "-rid",
+        "--rule_id",
+        type=str,
+        required=True,
+        help='ID of the rule to be updated. In the form of "ru_<UUID>"',
+    )
+    parser.add_argument(
+        "-f",
+        "--rule_file",
+        type=argparse.FileType("r"),
+        required=True,
+        help="path of a file with the desired rule's content, or - for STDIN",
+    )
+    args = parser.parse_args()
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    print(
+        json.dumps(
+            update_rule(
+                auth_session,
+                args.region,
+                args.project_id,
+                args.project_instance,
+                args.rule_id,
+                args.rule_file,
+            ),
+            indent=2,
+        ))

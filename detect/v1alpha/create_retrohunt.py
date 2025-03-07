@@ -47,7 +47,7 @@ from common import regions
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-  "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 
@@ -60,7 +60,7 @@ def create_retrohunt(
     start_time: datetime.datetime,
     end_time: datetime.datetime,
 ) -> Mapping[str, Any]:
-  """Creates a retrohunt to run a detection rule over historical data.
+    """Creates a retrohunt to run a detection rule over historical data.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -81,68 +81,53 @@ def create_retrohunt(
   Requires the following IAM permission on the parent resource:
   chronicle.retrohunts.create
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      proj_region
-  )
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}/retrohunts"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, proj_region)
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}/retrohunts"
 
-  body = {
-      "process_interval": {
-          "start_time": datetime_converter.strftime(start_time),
-          "end_time": datetime_converter.strftime(end_time),
-      },
-  }
+    body = {
+        "process_interval": {
+            "start_time": datetime_converter.strftime(start_time),
+            "end_time": datetime_converter.strftime(end_time),
+        },
+    }
 
-  response = http_session.request("POST", url, json=body)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  
-  return response.json()
+    response = http_session.request("POST", url, json=body)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  # common
-  chronicle_auth.add_argument_credentials_file(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  regions.add_argument_region(parser)
-  # local
-  parser.add_argument(
-      "--rule_id",
-      type=str,
-      required=True,
-      help='ID of rule to create retrohunt for (format: "ru_<UUID>")'
-  )
-  parser.add_argument(
-      "--start_time",
-      type=datetime_converter.iso8601_datetime_utc,
-      required=True,
-      help="Start time in UTC (format: yyyy-mm-ddThh:mm:ssZ)"
-  )
-  parser.add_argument(
-      "--end_time",
-      type=datetime_converter.iso8601_datetime_utc,
-      required=True,
-      help="End time in UTC (format: yyyy-mm-ddThh:mm:ssZ)"
-  )
+    parser = argparse.ArgumentParser()
+    # common
+    chronicle_auth.add_argument_credentials_file(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    regions.add_argument_region(parser)
+    # local
+    parser.add_argument(
+        "--rule_id",
+        type=str,
+        required=True,
+        help='ID of rule to create retrohunt for (format: "ru_<UUID>")')
+    parser.add_argument("--start_time",
+                        type=datetime_converter.iso8601_datetime_utc,
+                        required=True,
+                        help="Start time in UTC (format: yyyy-mm-ddThh:mm:ssZ)")
+    parser.add_argument("--end_time",
+                        type=datetime_converter.iso8601_datetime_utc,
+                        required=True,
+                        help="End time in UTC (format: yyyy-mm-ddThh:mm:ssZ)")
 
-  args = parser.parse_args()
+    args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  result = create_retrohunt(
-      auth_session,
-      args.project_id,
-      args.project_instance,
-      args.region,
-      args.rule_id,
-      args.start_time,
-      args.end_time
-  )
-  print(json.dumps(result, indent=2))
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    result = create_retrohunt(auth_session, args.project_id,
+                              args.project_instance, args.region, args.rule_id,
+                              args.start_time, args.end_time)
+    print(json.dumps(result, indent=2))

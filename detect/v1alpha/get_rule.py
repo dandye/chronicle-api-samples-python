@@ -69,9 +69,7 @@ def get_rule(
     chronicle.rules.get
     """
     base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL,
-        proj_region
-    )
+        CHRONICLE_API_BASE_URL, proj_region)
     parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
     url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
 
@@ -79,7 +77,7 @@ def get_rule(
     if response.status_code >= 400:
         print(response.text)
     response.raise_for_status()
-    
+
     return response.json()
 
 
@@ -95,7 +93,8 @@ if __name__ == "__main__":
         "--rule_id",
         type=str,
         required=True,
-        help='Unique ID of the rule to retrieve ("ru_<UUID>" or "ru_<UUID>@v_<seconds>_<nanoseconds>")'
+        help=
+        'Unique ID of the rule to retrieve ("ru_<UUID>" or "ru_<UUID>@v_<seconds>_<nanoseconds>")'
     )
 
     args = parser.parse_args()

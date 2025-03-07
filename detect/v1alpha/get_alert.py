@@ -42,7 +42,7 @@ from common import regions
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-  "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 
@@ -54,7 +54,7 @@ def get_alert(
     alert_id: str,
     include_detections: bool = False,
 ) -> Mapping[str, Any]:
-  """Gets an Alert using the Legacy Get Alert API.
+    """Gets an Alert using the Legacy Get Alert API.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -74,57 +74,49 @@ def get_alert(
   Requires the following IAM permission on the parent resource:
   chronicle.alerts.get
   """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      proj_region
-  )
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyGetAlert"
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL, proj_region)
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyGetAlert"
 
-  query_params = {"alertId": alert_id}
-  if include_detections:
-    query_params["includeDetections"] = True
+    query_params = {"alertId": alert_id}
+    if include_detections:
+        query_params["includeDetections"] = True
 
-  response = http_session.request("GET", url, params=query_params)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  
-  return response.json()
+    response = http_session.request("GET", url, params=query_params)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  # common
-  chronicle_auth.add_argument_credentials_file(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  regions.add_argument_region(parser)
-  # local
-  parser.add_argument(
-      "--alert_id",
-      type=str,
-      required=True,
-      help="Identifier for the alert"
-  )
-  parser.add_argument(
-      "--include-detections",
-      action="store_true",
-      help="Include detections in the response"
-  )
+    parser = argparse.ArgumentParser()
+    # common
+    chronicle_auth.add_argument_credentials_file(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    regions.add_argument_region(parser)
+    # local
+    parser.add_argument("--alert_id",
+                        type=str,
+                        required=True,
+                        help="Identifier for the alert")
+    parser.add_argument("--include-detections",
+                        action="store_true",
+                        help="Include detections in the response")
 
-  args = parser.parse_args()
+    args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  alert = get_alert(
-      auth_session,
-      args.project_id,
-      args.project_instance,
-      args.region,
-      args.alert_id,
-      args.include_detections,
-  )
-  print(json.dumps(alert, indent=2))
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file, SCOPES)
+    alert = get_alert(
+        auth_session,
+        args.project_id,
+        args.project_instance,
+        args.region,
+        args.alert_id,
+        args.include_detections,
+    )
+    print(json.dumps(alert, indent=2))
