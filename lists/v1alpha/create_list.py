@@ -15,16 +15,24 @@
 # limitations under the License.
 #
 # pylint: disable=line-too-long
-"""Executable and reusable sample for creating a Reference List.
+r"""Executable and reusable v1alpha API sample for creating a Reference List.
 
- Requires the following IAM permission on the parent resource:
- chronicle.referenceLists.create
+Usage:
+  python -m lists.v1alpha.create_list \
+    --project_id=<PROJECT_ID> \
+    --project_instance=<PROJECT_INSTANCE> \
+    --region=<REGION> \
+    --name=<LIST_NAME> \
+    --description=<LIST_DESCRIPTION> \
+    --list_file=<PATH_TO_LIST_FILE>
 
- https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.referenceLists/create
+API reference:
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.referenceLists/create
 """
 # pylint: enable=line-too-long
 
 import argparse
+import json
 from typing import Any, Dict, Optional, Sequence
 
 from google.auth.transport import requests
@@ -36,14 +44,15 @@ from common import regions
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-    "https://www.googleapis.com/auth/cloud-platform",
+  "https://www.googleapis.com/auth/cloud-platform",
 ]
+
 PREFIX = "REFERENCE_LIST_SYNTAX_TYPE_"
 SYNTAX_TYPE_ENUM = [
-    f"{PREFIX}UNSPECIFIED",  # Defaults to ..._PLAIN_TEXT_STRING.
-    f"{PREFIX}PLAIN_TEXT_STRING",  # List contains plain text patterns.
-    f"{PREFIX}REGEX",  # List contains only Regular Expression patterns.
-    f"{PREFIX}CIDR",  # List contains only CIDR patterns.
+  f"{PREFIX}UNSPECIFIED",  # Defaults to ..._PLAIN_TEXT_STRING.
+  f"{PREFIX}PLAIN_TEXT_STRING",  # List contains plain text patterns.
+  f"{PREFIX}REGEX",  # List contains only Regular Expression patterns.
+  f"{PREFIX}CIDR",  # List contains only CIDR patterns.
 ]
 
 
@@ -58,7 +67,7 @@ def create_list(
     content_type: str,
     scope_name: Optional[str] | None = None,
 ) -> Dict[str, Any]:
-  """Creates a list.
+  """Creates a reference list using the Create Reference List API.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -70,28 +79,26 @@ def create_list(
     content_lines: Array containing each line of the list's content.
     content_type: Type of list content, indicating how to interpret this list.
     scope_name: (Optional) Data RBAC scope name for the list.
+
   Returns:
     Dictionary representation of the created Reference List.
 
   Raises:
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
+
+  Requires the following IAM permission on the parent resource:
+  chronicle.referenceLists.create
   """
-  # pylint: disable=line-too-long
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL,
       proj_region
   )
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/referenceLists"
-  # pylint: enable=line-too-long
 
-  # entries are list like [{"value": <string>}, ...]
-  # pylint: disable-next=line-too-long
-  # https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.referenceLists#resource:-referencelist
-  entries = []
-  for content_line in content_lines:
-    entries.append({"value": content_line.strip()})
+  # Create entries in format [{"value": <string>}, ...]
+  entries = [{"value": line.strip()} for line in content_lines]
 
   body = {
       "name": name,
@@ -99,6 +106,7 @@ def create_list(
       "entries": entries,
       "syntax_type": content_type,
   }
+
   if scope_name:
     body["scope_info"] = {
         "referenceListScope": {
@@ -109,62 +117,63 @@ def create_list(
     }
   else:
     body["scope_info"] = None
+
   params = {"referenceListId": name}
   response = http_session.request("POST", url, params=params, json=body)
-  # Expected server response:
-  # ['name', 'displayName', 'revisionCreateTime', 'description',
-  #  'entries', 'syntaxType'])
   if response.status_code >= 400:
     print(response.text)
   response.raise_for_status()
+  
   return response.json()
 
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
+  # common
   chronicle_auth.add_argument_credentials_file(parser)
   project_instance.add_argument_project_instance(parser)
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
+  # local
   parser.add_argument(
-      "-n", "--name", type=str, required=True, help="unique name for the list"
+      "--name",
+      type=str,
+      required=True,
+      help="Unique name for the list"
   )
   parser.add_argument(
-      "-d",
       "--description",
       type=str,
       required=True,
-      help="description of the list",
+      help="Description of the list"
   )
   parser.add_argument(
-      "-s", "--scope_name", type=str, help="data RBAC scope name for the list"
+      "--scope_name",
+      type=str,
+      help="Data RBAC scope name for the list"
   )
   parser.add_argument(
-      "-t",
       "--syntax_type",
       type=str,
       required=False,
       default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
       choices=SYNTAX_TYPE_ENUM,
-      # pylint: disable-next=line-too-long
-      help="syntax type of the list, used for validation (default: REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING)",
+      help="Syntax type of the list, used for validation"
   )
   parser.add_argument(
-      "-f",
       "--list_file",
       type=argparse.FileType("r"),
       required=True,
-      # File example:
-      #   python3 -m lists.v1alpha.create_list <other args> -f <path>
-      # STDIN example:
-      #   cat <path> | python3 -m lists.v1alpha.create_list <other args> -f -
-      help="path of a file containing the list content, or - for STDIN",
+      help="Path to file containing list content, or - for STDIN"
   )
+
   args = parser.parse_args()
 
-  # pylint: disable-next=line-too-long
-  auth_session = chronicle_auth.initialize_http_session(args.credentials_file, SCOPES)
-  response_json = create_list(
+  auth_session = chronicle_auth.initialize_http_session(
+      args.credentials_file,
+      SCOPES
+  )
+  result = create_list(
       auth_session,
       args.project_id,
       args.project_instance,
@@ -175,5 +184,4 @@ if __name__ == "__main__":
       args.syntax_type,
       args.scope_name,
   )
-  print("New list created successfully, at "
-        f"{response_json.get('revisionCreateTime')}")
+  print(json.dumps(result, indent=2))

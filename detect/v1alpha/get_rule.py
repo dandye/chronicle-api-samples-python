@@ -14,32 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-r"""Executable sample for getting a rule.
-
-Sample Commands (run from api_samples_python dir):
-  python3 -m detect.v1alpha.get_rule -r=<region> -p=<project_id> \
-      -i=<instance_id> -rid=<rule_id>
-
-  python3 -m detect.v1alpha.get_rule -r=<region> -p=<project_id> \
-      -i=<instance_id> -rid=<rule_id>@v_<seconds>_<nanoseconds>
+# pylint: disable=line-too-long
+r"""Executable and reusable v1alpha API sample for getting a rule.
 
 API reference:
-  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules/get
-  https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules#Rule
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules/get
+https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules#Rule
 """
+# pylint: enable=line-too-long
 
 import argparse
 import json
-
 from typing import Any, Mapping
+
+from google.auth.transport import requests
+
 from common import chronicle_auth
 from common import project_id
 from common import project_instance
 from common import regions
-from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
-
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
@@ -47,74 +42,73 @@ SCOPES = [
 
 def get_rule(
     http_session: requests.AuthorizedSession,
-    proj_region: str,
     proj_id: str,
     proj_instance: str,
+    proj_region: str,
     rule_id: str,
 ) -> Mapping[str, Any]:
-  """Get a rule.
+    """Gets a rule using the Get Rule API.
 
-  Args:
-    http_session: Authorized session for HTTP requests.
-    proj_region: region in which the target project is located
-    proj_id: GCP project id or number which the target instance belongs to
-    proj_instance: uuid of the instance (with dashes)
-    rule_id: Unique ID of the detection rule to retrieve ("ru_<UUID>" or
-      "ru_<UUID>@v_<seconds>_<nanoseconds>"). If a version suffix isn't
-      specified we use the rule's latest version.
+    Args:
+        http_session: Authorized session for HTTP requests.
+        proj_id: GCP project id or number to which the target instance belongs.
+        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
+        proj_region: region in which the target project is located.
+        rule_id: Unique ID of the detection rule to retrieve ("ru_<UUID>" or
+            "ru_<UUID>@v_<seconds>_<nanoseconds>"). If a version suffix isn't
+            specified we use the rule's latest version.
 
-  Returns:
-    a rule object containing relevant rule's information
-  Raises:
-    requests.exceptions.HTTPError: HTTP request resulted in an error
-      (response.status_code >= 400).
-  """
-  base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      args.region
-  )
-  # pylint: disable-next=line-too-long
-  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-  url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
+    Returns:
+        Dictionary containing the rule's information.
 
-  # See API reference links at top of this file, for response format.
-  response = http_session.request("GET", url)
-  if response.status_code >= 400:
-    print(response.text)
-  response.raise_for_status()
-  return response.json()
+    Raises:
+        requests.exceptions.HTTPError: HTTP request resulted in an error
+            (response.status_code >= 400).
+
+    Requires the following IAM permission on the parent resource:
+    chronicle.rules.get
+    """
+    base_url_with_region = regions.url_always_prepend_region(
+        CHRONICLE_API_BASE_URL,
+        proj_region
+    )
+    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+    url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
+
+    response = http_session.request("GET", url)
+    if response.status_code >= 400:
+        print(response.text)
+    response.raise_for_status()
+    
+    return response.json()
 
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  chronicle_auth.add_argument_credentials_file(parser)
-  project_instance.add_argument_project_instance(parser)
-  project_id.add_argument_project_id(parser)
-  regions.add_argument_region(parser)
-  parser.add_argument(
-      "-rid",
-      "--rule_id",
-      type=str,
-      required=True,
-      help=(
-          'rule ID to get rule for. can use both "ru_<UUID>" or'
-          ' "ru_<UUID>@v_<seconds>_<nanoseconds>"'
-      ),
-  )
-  args = parser.parse_args()
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
-  print(
-      json.dumps(
-          get_rule(
-              auth_session,
-              args.region,
-              args.project_id,
-              args.project_instance,
-              args.rule_id
-          ),
-          indent=2,
-      )
-  )
+    parser = argparse.ArgumentParser()
+    # common
+    chronicle_auth.add_argument_credentials_file(parser)
+    project_instance.add_argument_project_instance(parser)
+    project_id.add_argument_project_id(parser)
+    regions.add_argument_region(parser)
+    # local
+    parser.add_argument(
+        "--rule_id",
+        type=str,
+        required=True,
+        help='Unique ID of the rule to retrieve ("ru_<UUID>" or "ru_<UUID>@v_<seconds>_<nanoseconds>")'
+    )
+
+    args = parser.parse_args()
+
+    auth_session = chronicle_auth.initialize_http_session(
+        args.credentials_file,
+        SCOPES,
+    )
+    rule = get_rule(
+        auth_session,
+        args.project_id,
+        args.project_instance,
+        args.region,
+        args.rule_id,
+    )
+    print(json.dumps(rule, indent=2))
