@@ -15,7 +15,8 @@
 # limitations under the License.
 """Setup configuration for Chronicle API SDK."""
 
-from setuptools import find_packages, setup
+from setuptools import find_packages
+from setuptools import setup
 
 setup(
     name="chronicle-api",
