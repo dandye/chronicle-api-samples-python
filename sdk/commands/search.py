@@ -23,6 +23,7 @@ from common import chronicle_auth
 
 from search.v1alpha import asset_events_find
 from search.v1alpha import raw_logs_find
+from search.v1alpha import search_query_get
 from search.v1alpha import udm_events_find
 
 SCOPES = [
@@ -170,4 +171,32 @@ def find_udm_events_cmd(ctx, tokens, event_ids, return_unenriched_data, return_a
         list(event_ids) if event_ids else None,
         return_unenriched_data,
         return_all_events_for_log,
+    )
+
+
+@search.command("get-search-query")
+@click.option(
+    "--user-id",
+    required=True,
+    help="ID of the user who owns the search query.",
+)
+@click.option(
+    "--query-id",
+    required=True,
+    help="ID of the search query to retrieve.",
+)
+@click.pass_context
+def get_search_query_cmd(ctx, user_id, query_id):
+    """Get a search query by ID."""
+    auth_session = chronicle_auth.initialize_http_session(
+        ctx.obj["credentials_file"],
+        SCOPES,
+    )
+    search_query_get.get_search_query(
+        auth_session,
+        ctx.obj["project_id"],
+        ctx.obj["project_instance"],
+        ctx.obj["region"],
+        user_id,
+        query_id,
     )
