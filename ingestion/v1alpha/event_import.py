@@ -55,7 +55,7 @@ def import_events(http_session: requests.AuthorizedSession, proj_id: str,
 
   Requires the following IAM permission on the parent resource:
   chronicle.events.import
-    """
+  """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
   # pylint: disable=line-too-long
@@ -91,7 +91,8 @@ if __name__ == "__main__":
       "--json_events_file",
       type=argparse.FileType("r"),
       required=True,
-      help="path to a file (or \"-\" for STDIN) containing events in JSON format"
+      help="path to a file (or \"-\" for STDIN) containing events in JSON "
+      "format"
   )
 
   args = parser.parse_args()

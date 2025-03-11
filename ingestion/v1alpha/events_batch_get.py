@@ -47,20 +47,20 @@ def batch_get_events(
 ) -> None:
   """Batch get events from Chronicle using the Events BatchGet API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: region in which the target project is located.
-        event_ids: JSON string containing a list of event IDs to retrieve.
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid w/ dashes) for the Chronicle instance.
+    proj_region: region in which the target project is located.
+    event_ids: JSON string containing a list of event IDs to retrieve.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
 
-    Requires the following IAM permission on the parent resource:
-    chronicle.events.batchGet
-    """
+  Requires the following IAM permission on the parent resource:
+  chronicle.events.batchGet
+  """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
   # pylint: disable=line-too-long
