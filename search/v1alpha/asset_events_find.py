@@ -53,27 +53,27 @@ def find_asset_events(http_session: requests.AuthorizedSession,
                       max_results: Optional[int] = None) -> None:
   """Find asset events in Chronicle using the Legacy Find Asset Events API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the instance.
-        proj_region: region in which the target project is located.
-        asset_indicator: JSON str containing the asset indicator to search for.
-        start_time: Start time in RFC3339 format (e.g., "2024-01-01T00:00:00Z").
-        end_time: End time in RFC3339 format (e.g., "2024-01-02T00:00:00Z").
-        reference_time: Optional reference time in RFC3339 format for
-          asset aliasing.
-        max_results: Optional maximum number of results to return
-          (default: 10000, max: 250000).
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid with dashes) for the instance.
+    proj_region: region in which the target project is located.
+    asset_indicator: JSON str containing the asset indicator to search for.
+    start_time: Start time in RFC3339 format (e.g., "2024-01-01T00:00:00Z").
+    end_time: End time in RFC3339 format (e.g., "2024-01-02T00:00:00Z").
+    reference_time: Optional reference time in RFC3339 format for
+      asset aliasing.
+    max_results: Optional maximum number of results to return
+      (default: 10000, max: 250000).
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
-        ValueError: If the time format is invalid.
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
+    ValueError: If the time format is invalid.
 
-    Requires the following IAM permission on the instance resource:
-    chronicle.legacies.legacyFindAssetEvents
-    """
+  Requires the following IAM permission on the instance resource:
+  chronicle.legacies.legacyFindAssetEvents
+  """
   # Validate and parse the times to ensure they're in RFC3339 format
   for time_str in [start_time, end_time, reference_time
                   ] if reference_time else [start_time, end_time]:

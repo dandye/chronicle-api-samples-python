@@ -87,8 +87,10 @@ def get_retrohunt(
   """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}/retrohunts/{op_id}"
+  # pylint: enable=line-too-long
 
   response = http_session.request("GET", url)
   if response.status_code >= 400:

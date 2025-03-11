@@ -48,31 +48,30 @@ def get_rule(
 ) -> Mapping[str, Any]:
   """Gets a rule using the Get Rule API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: Region where the target project is located.
-        rule_id: Unique ID of the detection rule to retrieve ("ru_<UUID>" or
-            "ru_<UUID>@v_<seconds>_<nanoseconds>"). If a version suffix isn't
-            specified we use the rule's latest version.
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid w/ dashes) for the Chronicle instance.
+    proj_region: Region where the target project is located.
+    rule_id: Unique ID of the detection rule to retrieve ("ru_<UUID>" or
+        "ru_<UUID>@v_<seconds>_<nanoseconds>"). If a version suffix isn't
+        specified we use the rule's latest version.
 
-    Returns:
-        Dictionary containing the rule's information.
+  Returns:
+    Dictionary containing the rule's information.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
 
-    Requires the following IAM permission on the parent resource:
-    chronicle.rules.get
-    """
+  Requires the following IAM permission on the parent resource:
+  chronicle.rules.get
+  """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
-  # pylint: disable=line-too-long
+  # pylint: disable=line-too-long-next
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
-  # pylint: enable=line-too-lon
 
   response = http_session.request("GET", url)
   if response.status_code >= 400:
