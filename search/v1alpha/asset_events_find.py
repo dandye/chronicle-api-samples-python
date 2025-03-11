@@ -23,8 +23,7 @@ https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.location
 # pylint: enable=line-too-long
 
 import argparse
-from datetime import datetime
-from datetime import timezone
+import datetime
 import json
 from typing import Optional
 
@@ -79,7 +78,7 @@ def find_asset_events(http_session: requests.AuthorizedSession,
   for time_str in [start_time, end_time, reference_time
                   ] if reference_time else [start_time, end_time]:
     try:
-      datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
+      datetime.datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
     except ValueError as e:
       if "does not match format" in str(e):
         raise ValueError(f"Time '{time_str}' must be in RFC3339 format "
@@ -88,8 +87,10 @@ def find_asset_events(http_session: requests.AuthorizedSession,
 
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
   instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindAssetEvents"
+  # pylint: enable=line-too-long
 
   # Build query parameters
   params = [

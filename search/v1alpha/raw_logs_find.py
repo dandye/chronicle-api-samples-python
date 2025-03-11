@@ -50,7 +50,7 @@ def find_raw_logs(http_session: requests.AuthorizedSession,
                   regex_search: bool = False,
                   case_sensitive: bool = False,
                   max_response_size: Optional[int] = None) -> None:
-    """Find raw logs in Chronicle using the Legacy Find Raw Logs API.
+  """Find raw logs in Chronicle using the Legacy Find Raw Logs API.
 
     Args:
         http_session: Authorized session for HTTP requests.
@@ -72,90 +72,87 @@ def find_raw_logs(http_session: requests.AuthorizedSession,
     Requires the following IAM permission on the instance resource:
     chronicle.legacies.legacyFindRawLogs
     """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindRawLogs"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindRawLogs"
 
-    # Build query parameters
-    params = [f"query={query}"]
-    if batch_tokens and not log_ids:  # log_ids take precedence over batch_tokens
-        for token in batch_tokens:
-            params.append(f"batchToken={token}")
-    if log_ids:
-        for log_id in log_ids:
-            params.append(f"ids={log_id}")
-    if regex_search:
-        params.append("regexSearch=true")
-    if case_sensitive:
-        params.append("caseSensitive=true")
-    if max_response_size:
-        params.append(f"maxResponseByteSize={max_response_size}")
+  # Build query parameters
+  params = [f"query={query}"]
+  if batch_tokens and not log_ids:  # log_ids take precedence over batch_tokens
+    for token in batch_tokens:
+      params.append(f"batchToken={token}")
+  if log_ids:
+    for log_id in log_ids:
+      params.append(f"ids={log_id}")
+  if regex_search:
+    params.append("regexSearch=true")
+  if case_sensitive:
+    params.append("caseSensitive=true")
+  if max_response_size:
+    params.append(f"maxResponseByteSize={max_response_size}")
 
-    url = f"{url}?{'&'.join(params)}"
+  url = f"{url}?{'&'.join(params)}"
 
-    response = http_session.request("GET", url)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
+  response = http_session.request("GET", url)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
 
-    result = response.json()
-    print(json.dumps(result, indent=2))
+  result = response.json()
+  print(json.dumps(result, indent=2))
 
-    if result.get("too_many_results"):
-        print("\nWarning: Some results were omitted due to too many matches.")
+  if result.get("too_many_results"):
+    print("\nWarning: Some results were omitted due to too many matches.")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    # common
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    regions.add_argument_region(parser)
-    # local
-    parser.add_argument(
-        "--query",
-        type=str,
-        required=True,
-        help="Search parameters that expand or restrict the search")
-    parser.add_argument(
-        "--batch_tokens",
-        type=str,
-        help=
-        'JSON string containing a list of batch tokens (e.g., \'["token1", "token2"]\')'
-    )
-    parser.add_argument(
-        "--log_ids",
-        type=str,
-        help=
-        'JSON string containing a list of raw log IDs (e.g., \'["id1", "id2"]\')'
-    )
-    parser.add_argument("--regex_search",
-                        action="store_true",
-                        help="Whether to treat the query as a regex pattern")
-    parser.add_argument("--case_sensitive",
-                        action="store_true",
-                        help="Whether to perform a case-sensitive search")
-    parser.add_argument(
-        "--max_response_size",
-        type=int,
-        help=
-        f"Maximum response size in bytes (default: {DEFAULT_MAX_RESPONSE_SIZE})"
-    )
+  parser = argparse.ArgumentParser()
+  # common
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  regions.add_argument_region(parser)
+  # local
+  parser.add_argument(
+      "--query",
+      type=str,
+      required=True,
+      help="Search parameters that expand or restrict the search")
+  parser.add_argument(
+      "--batch_tokens",
+      type=str,
+      help=
+      'JSON string containing a list of batch tokens (e.g., \'["token1", "token2"]\')'
+  )
+  parser.add_argument(
+      "--log_ids",
+      type=str,
+      help=
+      'JSON string containing a list of raw log IDs (e.g., \'["id1", "id2"]\')')
+  parser.add_argument("--regex_search",
+                      action="store_true",
+                      help="Whether to treat the query as a regex pattern")
+  parser.add_argument("--case_sensitive",
+                      action="store_true",
+                      help="Whether to perform a case-sensitive search")
+  parser.add_argument(
+      "--max_response_size",
+      type=int,
+      help=
+      f"Maximum response size in bytes (default: {DEFAULT_MAX_RESPONSE_SIZE})")
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    # Convert JSON strings to lists if provided
-    batch_tokens_list = json.loads(
-        args.batch_tokens) if args.batch_tokens else None
-    log_ids_list = json.loads(args.log_ids) if args.log_ids else None
+  # Convert JSON strings to lists if provided
+  batch_tokens_list = json.loads(
+      args.batch_tokens) if args.batch_tokens else None
+  log_ids_list = json.loads(args.log_ids) if args.log_ids else None
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file,
-        SCOPES,
-    )
-    find_raw_logs(auth_session, args.project_id, args.project_instance,
-                  args.region, args.query, batch_tokens_list, log_ids_list,
-                  args.regex_search, args.case_sensitive,
-                  args.max_response_size)
+  auth_session = chronicle_auth.initialize_http_session(
+      args.credentials_file,
+      SCOPES,
+  )
+  find_raw_logs(auth_session, args.project_id, args.project_instance,
+                args.region, args.query, batch_tokens_list, log_ids_list,
+                args.regex_search, args.case_sensitive, args.max_response_size)

@@ -51,7 +51,7 @@ def list_rules(
     proj_instance: str,
     proj_region: str,
 ) -> Mapping[str, Any]:
-    """Gets a list of rules.
+  """Gets a list of rules.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -69,31 +69,31 @@ def list_rules(
   Requires the following IAM permission on the parent resource:
   chronicle.rules.list
   """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{parent}/rules"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{parent}/rules"
 
-    response = http_session.request("GET", url)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
+  response = http_session.request("GET", url)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
 
-    return response.json()
+  return response.json()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    # common
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    regions.add_argument_region(parser)
+  parser = argparse.ArgumentParser()
+  # common
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  regions.add_argument_region(parser)
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file, SCOPES)
-    rules = list_rules(auth_session, args.project_id, args.project_instance,
-                       args.region)
-    print(json.dumps(rules, indent=2))
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
+  rules = list_rules(auth_session, args.project_id, args.project_instance,
+                     args.region)
+  print(json.dumps(rules, indent=2))

@@ -43,15 +43,15 @@ from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
-  "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/cloud-platform",
 ]
 
 PREFIX = "REFERENCE_LIST_SYNTAX_TYPE_"
 SYNTAX_TYPE_ENUM = [
-  f"{PREFIX}UNSPECIFIED",  # Defaults to ..._PLAIN_TEXT_STRING.
-  f"{PREFIX}PLAIN_TEXT_STRING",  # List contains plain text patterns.
-  f"{PREFIX}REGEX",  # List contains only Regular Expression patterns.
-  f"{PREFIX}CIDR",  # List contains only CIDR patterns.
+    f"{PREFIX}UNSPECIFIED",  # Defaults to ..._PLAIN_TEXT_STRING.
+    f"{PREFIX}PLAIN_TEXT_STRING",  # List contains plain text patterns.
+    f"{PREFIX}REGEX",  # List contains only Regular Expression patterns.
+    f"{PREFIX}CIDR",  # List contains only CIDR patterns.
 ]
 
 
@@ -90,9 +90,7 @@ def create_list(
   chronicle.referenceLists.create
   """
   base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      proj_region
-  )
+      CHRONICLE_API_BASE_URL, proj_region)
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/referenceLists"
 
@@ -122,7 +120,7 @@ def create_list(
   if response.status_code >= 400:
     print(response.text)
   response.raise_for_status()
-  
+
   return response.json()
 
 
@@ -134,44 +132,33 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   # local
-  parser.add_argument(
-      "--name",
-      type=str,
-      required=True,
-      help="Unique name for the list"
-  )
-  parser.add_argument(
-      "--description",
-      type=str,
-      required=True,
-      help="Description of the list"
-  )
-  parser.add_argument(
-      "--scope_name",
-      type=str,
-      help="Data RBAC scope name for the list"
-  )
-  parser.add_argument(
-      "--syntax_type",
-      type=str,
-      required=False,
-      default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
-      choices=SYNTAX_TYPE_ENUM,
-      help="Syntax type of the list, used for validation"
-  )
+  parser.add_argument("--name",
+                      type=str,
+                      required=True,
+                      help="Unique name for the list")
+  parser.add_argument("--description",
+                      type=str,
+                      required=True,
+                      help="Description of the list")
+  parser.add_argument("--scope_name",
+                      type=str,
+                      help="Data RBAC scope name for the list")
+  parser.add_argument("--syntax_type",
+                      type=str,
+                      required=False,
+                      default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
+                      choices=SYNTAX_TYPE_ENUM,
+                      help="Syntax type of the list, used for validation")
   parser.add_argument(
       "--list_file",
       type=argparse.FileType("r"),
       required=True,
-      help="Path to file containing list content, or - for STDIN"
-  )
+      help="Path to file containing list content, or - for STDIN")
 
   args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file,
-      SCOPES
-  )
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
   result = create_list(
       auth_session,
       args.project_id,

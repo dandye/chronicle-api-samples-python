@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Chronicle Detection API commands."""
 
 import json
@@ -44,15 +43,15 @@ SCOPES = [
 
 @click.group()
 def detect():
-    """Detection API commands."""
-    pass
+  """Detection API commands."""
+  pass
 
 
 # Alert Management Commands
 @detect.group()
 def alerts():
-    """Alert management commands."""
-    pass
+  """Alert management commands."""
+  pass
 
 
 @alerts.command("get")
@@ -67,21 +66,22 @@ def alerts():
     is_flag=True,
     help="Include non-alerting detections.",
 )
-def get_alert_cmd(credentials_file, project_id, project_instance, region, alert_id, include_detections):
-    """Get an alert by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    alert = get_alert.get_alert(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        alert_id,
-        include_detections,
-    )
-    print(json.dumps(alert, indent=2))
+def get_alert_cmd(credentials_file, project_id, project_instance, region,
+                  alert_id, include_detections):
+  """Get an alert by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  alert = get_alert.get_alert(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      alert_id,
+      include_detections,
+  )
+  print(json.dumps(alert, indent=2))
 
 
 @alerts.command("update")
@@ -101,22 +101,23 @@ def get_alert_cmd(credentials_file, project_id, project_instance, region, alert_
     required=True,
     help="JSON string containing the update data.",
 )
-def update_alert_cmd(credentials_file, project_id, project_instance, region, alert_id, update_mask, json_body):
-    """Update an alert."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = update_alert.update_alert(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        alert_id,
-        update_mask,
-        json_body,
-    )
-    print(json.dumps(result, indent=2))
+def update_alert_cmd(credentials_file, project_id, project_instance, region,
+                     alert_id, update_mask, json_body):
+  """Update an alert."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = update_alert.update_alert(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      alert_id,
+      update_mask,
+      json_body,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @alerts.command("bulk-update")
@@ -136,29 +137,30 @@ def update_alert_cmd(credentials_file, project_id, project_instance, region, ale
     required=True,
     help="JSON string containing the update data.",
 )
-def bulk_update_alerts_cmd(credentials_file, project_id, project_instance, region, filter, update_mask, json_body):
-    """Bulk update alerts matching a filter."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = bulk_update_alerts.bulk_update_alerts(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        filter,
-        update_mask,
-        json_body,
-    )
-    print(json.dumps(result, indent=2))
+def bulk_update_alerts_cmd(credentials_file, project_id, project_instance,
+                           region, filter, update_mask, json_body):
+  """Bulk update alerts matching a filter."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = bulk_update_alerts.bulk_update_alerts(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      filter,
+      update_mask,
+      json_body,
+  )
+  print(json.dumps(result, indent=2))
 
 
 # Detection Commands
 @detect.group()
 def detections():
-    """Detection management commands."""
-    pass
+  """Detection management commands."""
+  pass
 
 
 @detections.command("get")
@@ -168,20 +170,21 @@ def detections():
     required=True,
     help="Identifier for the detection.",
 )
-def get_detection_cmd(credentials_file, project_id, project_instance, region, detection_id):
-    """Get a detection by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    detection = get_detection.get_detection(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        detection_id,
-    )
-    print(json.dumps(detection, indent=2))
+def get_detection_cmd(credentials_file, project_id, project_instance, region,
+                      detection_id):
+  """Get a detection by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  detection = get_detection.get_detection(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      detection_id,
+  )
+  print(json.dumps(detection, indent=2))
 
 
 @detections.command("list")
@@ -199,29 +202,30 @@ def get_detection_cmd(credentials_file, project_id, project_instance, region, de
     "--page-token",
     help="Page token from previous response.",
 )
-def list_detections_cmd(credentials_file, project_id, project_instance, region, filter, page_size, page_token):
-    """List detections."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = list_detections.list_detections(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        filter,
-        page_size,
-        page_token,
-    )
-    print(json.dumps(result, indent=2))
+def list_detections_cmd(credentials_file, project_id, project_instance, region,
+                        filter, page_size, page_token):
+  """List detections."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = list_detections.list_detections(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      filter,
+      page_size,
+      page_token,
+  )
+  print(json.dumps(result, indent=2))
 
 
 # Rule Management Commands
 @detect.group()
 def rules():
-    """Rule management commands."""
-    pass
+  """Rule management commands."""
+  pass
 
 
 @rules.command("create")
@@ -231,20 +235,21 @@ def rules():
     required=True,
     help="JSON string containing the rule definition.",
 )
-def create_rule_cmd(credentials_file, project_id, project_instance, region, json_body):
-    """Create a new rule."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = create_rule.create_rule(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        json_body,
-    )
-    print(json.dumps(result, indent=2))
+def create_rule_cmd(credentials_file, project_id, project_instance, region,
+                    json_body):
+  """Create a new rule."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = create_rule.create_rule(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      json_body,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @rules.command("get")
@@ -254,20 +259,21 @@ def create_rule_cmd(credentials_file, project_id, project_instance, region, json
     required=True,
     help="Identifier for the rule.",
 )
-def get_rule_cmd(credentials_file, project_id, project_instance, region, rule_id):
-    """Get a rule by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = get_rule.get_rule(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        rule_id,
-    )
-    print(json.dumps(result, indent=2))
+def get_rule_cmd(credentials_file, project_id, project_instance, region,
+                 rule_id):
+  """Get a rule by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = get_rule.get_rule(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      rule_id,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @rules.command("delete")
@@ -277,19 +283,20 @@ def get_rule_cmd(credentials_file, project_id, project_instance, region, rule_id
     required=True,
     help="Identifier for the rule to delete.",
 )
-def delete_rule_cmd(credentials_file, project_id, project_instance, region, rule_id):
-    """Delete a rule."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    delete_rule.delete_rule(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        rule_id,
-    )
+def delete_rule_cmd(credentials_file, project_id, project_instance, region,
+                    rule_id):
+  """Delete a rule."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  delete_rule.delete_rule(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      rule_id,
+  )
 
 
 @rules.command("enable")
@@ -299,20 +306,21 @@ def delete_rule_cmd(credentials_file, project_id, project_instance, region, rule
     required=True,
     help="Identifier for the rule to enable.",
 )
-def enable_rule_cmd(credentials_file, project_id, project_instance, region, rule_id):
-    """Enable a rule."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = enable_rule.enable_rule(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        rule_id,
-    )
-    print(json.dumps(result, indent=2))
+def enable_rule_cmd(credentials_file, project_id, project_instance, region,
+                    rule_id):
+  """Enable a rule."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = enable_rule.enable_rule(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      rule_id,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @rules.command("list")
@@ -330,29 +338,30 @@ def enable_rule_cmd(credentials_file, project_id, project_instance, region, rule
     "--page-token",
     help="Page token from previous response.",
 )
-def list_rules_cmd(credentials_file, project_id, project_instance, region, filter, page_size, page_token):
-    """List rules."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = list_rules.list_rules(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        filter,
-        page_size,
-        page_token,
-    )
-    print(json.dumps(result, indent=2))
+def list_rules_cmd(credentials_file, project_id, project_instance, region,
+                   filter, page_size, page_token):
+  """List rules."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = list_rules.list_rules(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      filter,
+      page_size,
+      page_token,
+  )
+  print(json.dumps(result, indent=2))
 
 
 # Retrohunt Commands
 @detect.group()
 def retrohunts():
-    """Retrohunt management commands."""
-    pass
+  """Retrohunt management commands."""
+  pass
 
 
 @retrohunts.command("create")
@@ -362,20 +371,21 @@ def retrohunts():
     required=True,
     help="JSON string containing the retrohunt configuration.",
 )
-def create_retrohunt_cmd(credentials_file, project_id, project_instance, region, json_body):
-    """Create a new retrohunt."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = create_retrohunt.create_retrohunt(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        json_body,
-    )
-    print(json.dumps(result, indent=2))
+def create_retrohunt_cmd(credentials_file, project_id, project_instance, region,
+                         json_body):
+  """Create a new retrohunt."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = create_retrohunt.create_retrohunt(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      json_body,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @retrohunts.command("get")
@@ -385,27 +395,28 @@ def create_retrohunt_cmd(credentials_file, project_id, project_instance, region,
     required=True,
     help="Identifier for the retrohunt.",
 )
-def get_retrohunt_cmd(credentials_file, project_id, project_instance, region, retrohunt_id):
-    """Get a retrohunt by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = get_retrohunt.get_retrohunt(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        retrohunt_id,
-    )
-    print(json.dumps(result, indent=2))
+def get_retrohunt_cmd(credentials_file, project_id, project_instance, region,
+                      retrohunt_id):
+  """Get a retrohunt by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = get_retrohunt.get_retrohunt(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      retrohunt_id,
+  )
+  print(json.dumps(result, indent=2))
 
 
 # Error Management Commands
 @detect.group()
 def errors():
-    """Error management commands."""
-    pass
+  """Error management commands."""
+  pass
 
 
 @errors.command("list")
@@ -423,29 +434,30 @@ def errors():
     "--page-token",
     help="Page token from previous response.",
 )
-def list_errors_cmd(credentials_file, project_id, project_instance, region, filter, page_size, page_token):
-    """List errors."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = list_errors.list_errors(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        filter,
-        page_size,
-        page_token,
-    )
-    print(json.dumps(result, indent=2))
+def list_errors_cmd(credentials_file, project_id, project_instance, region,
+                    filter, page_size, page_token):
+  """List errors."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = list_errors.list_errors(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      filter,
+      page_size,
+      page_token,
+  )
+  print(json.dumps(result, indent=2))
 
 
 # Rule Set Deployment Commands
 @detect.group()
 def rulesets():
-    """Rule set deployment commands."""
-    pass
+  """Rule set deployment commands."""
+  pass
 
 
 @rulesets.command("batch-update")
@@ -455,17 +467,18 @@ def rulesets():
     required=True,
     help="JSON string containing the rule set deployment updates.",
 )
-def batch_update_rule_sets_cmd(credentials_file, project_id, project_instance, region, json_body):
-    """Batch update rule set deployments."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = batch_update_curated_rule_set_deployments.batch_update_curated_rule_set_deployments(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        json_body,
-    )
-    print(json.dumps(result, indent=2))
+def batch_update_rule_sets_cmd(credentials_file, project_id, project_instance,
+                               region, json_body):
+  """Batch update rule set deployments."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = batch_update_curated_rule_set_deployments.batch_update_curated_rule_set_deployments(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      json_body,
+  )
+  print(json.dumps(result, indent=2))

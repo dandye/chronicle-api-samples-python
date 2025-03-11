@@ -15,8 +15,6 @@
 # limitations under the License.
 """Chronicle Ingestion API commands."""
 
-import json
-
 import click
 from common import chronicle_auth
 

@@ -60,7 +60,7 @@ def batch_update_curated_rule_set_deployments(
     proj_instance: str,
     proj_region: str,
 ) -> Mapping[str, Any]:
-    """Batch updates multiple curated rule set deployments.
+  """Batch updates multiple curated rule set deployments.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -78,96 +78,95 @@ def batch_update_curated_rule_set_deployments(
   Requires the following IAM permission on the parent resource:
   chronicle.curatedRuleSetDeployments.update
   """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
 
-    # We use "-" in the URL because we provide category and rule_set IDs
-    # in the request data
-    url = f"{base_url_with_region}/v1alpha/{parent}/curatedRuleSetCategories/-/curatedRuleSets/-/curatedRuleSetDeployments:batchUpdate"
+  # We use "-" in the URL because we provide category and rule_set IDs
+  # in the request data
+  url = f"{base_url_with_region}/v1alpha/{parent}/curatedRuleSetCategories/-/curatedRuleSets/-/curatedRuleSetDeployments:batchUpdate"
 
-    def make_deployment_name(category: str, rule_set: str,
-                             precision: str) -> str:
-        """Helper function to create a deployment name."""
-        return f"{parent}/curatedRuleSetCategories/{category}/curatedRuleSets/{rule_set}/curatedRuleSetDeployments/{precision}"
+  def make_deployment_name(category: str, rule_set: str, precision: str) -> str:
+    """Helper function to create a deployment name."""
+    return f"{parent}/curatedRuleSetCategories/{category}/curatedRuleSets/{rule_set}/curatedRuleSetDeployments/{precision}"
 
-    # Example deployment configurations - update these with actual IDs
-    # Deployment A
-    category_a = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
-    rule_set_a = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
-    precision_a = "broad"
+  # Example deployment configurations - update these with actual IDs
+  # Deployment A
+  category_a = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+  rule_set_a = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+  precision_a = "broad"
 
-    # Deployment B
-    category_b = "cccccccc-cccc-cccc-cccc-cccccccccccc"
-    rule_set_b = "dddddddd-dddd-dddd-dddd-dddddddddddd"
-    precision_b = "precise"
+  # Deployment B
+  category_b = "cccccccc-cccc-cccc-cccc-cccccccccccc"
+  rule_set_b = "dddddddd-dddd-dddd-dddd-dddddddddddd"
+  precision_b = "precise"
 
-    print("\nNOTE: Using example category/rule_set/precision IDs.")
-    print("Please update the script with actual IDs before use.\n")
+  print("\nNOTE: Using example category/rule_set/precision IDs.")
+  print("Please update the script with actual IDs before use.\n")
 
-    json_data = {
-        "parent":
-            f"{parent}/curatedRuleSetCategories/-/curatedRuleSets/-",
-        "requests": [
-            {
-                "curated_rule_set_deployment": {
-                    "name":
-                        make_deployment_name(
-                            category_a,
-                            rule_set_a,
-                            precision_a,
-                        ),
-                    "enabled":
-                        True,
-                    "alerting":
-                        False,
-                },
-                "update_mask": {
-                    "paths": ["alerting", "enabled"],
-                },
-            },
-            {
-                "curated_rule_set_deployment": {
-                    "name":
-                        make_deployment_name(
-                            category_b,
-                            rule_set_b,
-                            precision_b,
-                        ),
-                    "enabled":
-                        True,
-                    "alerting":
-                        True,
-                },
-                "update_mask": {
-                    "paths": ["alerting", "enabled"],
-                },
-            },
-        ],
-    }
+  json_data = {
+      "parent":
+          f"{parent}/curatedRuleSetCategories/-/curatedRuleSets/-",
+      "requests": [
+          {
+              "curated_rule_set_deployment": {
+                  "name":
+                      make_deployment_name(
+                          category_a,
+                          rule_set_a,
+                          precision_a,
+                      ),
+                  "enabled":
+                      True,
+                  "alerting":
+                      False,
+              },
+              "update_mask": {
+                  "paths": ["alerting", "enabled"],
+              },
+          },
+          {
+              "curated_rule_set_deployment": {
+                  "name":
+                      make_deployment_name(
+                          category_b,
+                          rule_set_b,
+                          precision_b,
+                      ),
+                  "enabled":
+                      True,
+                  "alerting":
+                      True,
+              },
+              "update_mask": {
+                  "paths": ["alerting", "enabled"],
+              },
+          },
+      ],
+  }
 
-    response = http_session.request("POST", url, json=json_data)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
+  response = http_session.request("POST", url, json=json_data)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
 
-    return response.json()
+  return response.json()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    # common
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_id.add_argument_project_id(parser)
-    project_instance.add_argument_project_instance(parser)
-    regions.add_argument_region(parser)
+  parser = argparse.ArgumentParser()
+  # common
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_id.add_argument_project_id(parser)
+  project_instance.add_argument_project_instance(parser)
+  regions.add_argument_region(parser)
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file, SCOPES)
-    result = batch_update_curated_rule_set_deployments(auth_session,
-                                                       args.project_id,
-                                                       args.project_instance,
-                                                       args.region)
-    print(json.dumps(result, indent=2))
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
+  result = batch_update_curated_rule_set_deployments(auth_session,
+                                                     args.project_id,
+                                                     args.project_instance,
+                                                     args.region)
+  print(json.dumps(result, indent=2))

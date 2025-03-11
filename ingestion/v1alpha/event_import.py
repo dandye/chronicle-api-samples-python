@@ -37,13 +37,9 @@ SCOPES = [
 ]
 
 
-def import_events(
-  http_session: requests.AuthorizedSession,
-  proj_id: str,
-  proj_instance: str,
-  proj_region: str,
-  json_events: str
-) -> None:
+def import_events(http_session: requests.AuthorizedSession, proj_id: str,
+                  proj_instance: str, proj_region: str,
+                  json_events: str) -> None:
   """Import events into Chronicle using the Events Import API.
 
   Args:

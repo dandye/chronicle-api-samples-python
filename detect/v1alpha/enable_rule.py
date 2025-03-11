@@ -105,8 +105,8 @@ if __name__ == "__main__":
 
   args = parser.parse_args()
 
-  auth_session = chronicle_auth.initialize_http_session(
-      args.credentials_file, SCOPES)
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
   result = enable_rule(auth_session, args.project_id, args.project_instance,
-                        args.region, args.rule_id)
+                       args.region, args.rule_id)
   print(json.dumps(result, indent=2))

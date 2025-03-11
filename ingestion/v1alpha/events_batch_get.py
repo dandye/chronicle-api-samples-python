@@ -89,14 +89,11 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   # local
-  parser.add_argument(
-      "--event_ids",
-      type=str,
-      required=True,
-      help=
-      'JSON string containing a list of event IDs to '
-      'retrieve (e.g., \'["id1", "id2"]\')'
-  )
+  parser.add_argument("--event_ids",
+                      type=str,
+                      required=True,
+                      help='JSON string containing a list of event IDs to '
+                      'retrieve (e.g., \'["id1", "id2"]\')')
 
   args = parser.parse_args()
   auth_session = chronicle_auth.initialize_http_session(

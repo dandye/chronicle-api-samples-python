@@ -44,9 +44,8 @@ SCOPES = [
 ]
 
 
-def create_udm_events(
-    http_session: requests.AuthorizedSession, json_events: str
-) -> None:
+def create_udm_events(http_session: requests.AuthorizedSession,
+                      json_events: str) -> None:
   """Sends a collection of UDM events to the Google SecOps backend for ingestion.
 
   A Unified Data Model (UDM) event is a structured representation of an event
@@ -69,13 +68,17 @@ def create_udm_events(
   """
 
   base_url_with_region = regions.url_always_prepend_region(
-      CHRONICLE_API_BASE_URL,
-      args.region
-  )
+      CHRONICLE_API_BASE_URL, args.region)
   # pylint: disable-next=line-too-long
   parent = f"projects/{args.project_id}/locations/{args.region}/instances/{args.project_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/events:import"
-  body = {"inline_source": {"events": [{"udm": json.loads(json_events)[0],}]}}
+  body = {
+      "inline_source": {
+          "events": [{
+              "udm": json.loads(json_events)[0],
+          }]
+      }
+  }
 
   response = http_session.request("POST", url, json=body)
   print(response)
@@ -97,9 +100,7 @@ if __name__ == "__main__":
       "--json_events_file",
       type=argparse.FileType("r"),
       required=True,
-      help=(
-          "path to a file containing a list of UDM events in json format"
-      ),
+      help=("path to a file containing a list of UDM events in json format"),
   )
   args = parser.parse_args()
 

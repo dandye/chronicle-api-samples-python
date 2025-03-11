@@ -52,7 +52,7 @@ def get_rule(
         http_session: Authorized session for HTTP requests.
         proj_id: GCP project id or number to which the target instance belongs.
         proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: region in which the target project is located.
+        proj_region: Region where the target project is located.
         rule_id: Unique ID of the detection rule to retrieve ("ru_<UUID>" or
             "ru_<UUID>@v_<seconds>_<nanoseconds>"). If a version suffix isn't
             specified we use the rule's latest version.
@@ -69,8 +69,10 @@ def get_rule(
     """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/rules/{rule_id}"
+  # pylint: enable=line-too-lon
 
   response = http_session.request("GET", url)
   if response.status_code >= 400:
@@ -88,13 +90,11 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   # local
-  parser.add_argument(
-      "--rule_id",
-      type=str,
-      required=True,
-      help=
-      'Unique ID of the rule to retrieve ("ru_<UUID>" or "ru_<UUID>@v_<seconds>_<nanoseconds>")'
-  )
+  parser.add_argument("--rule_id",
+                      type=str,
+                      required=True,
+                      help='Rule ID to retrieve ("ru_<UUID>" '
+                      'or "ru_<UUID>@v_<seconds>_<nanoseconds>")')
 
   args = parser.parse_args()
 

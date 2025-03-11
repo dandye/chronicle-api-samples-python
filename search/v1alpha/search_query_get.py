@@ -36,13 +36,10 @@ SCOPES = [
 ]
 
 
-def get_search_query(http_session: requests.AuthorizedSession,
-                    proj_id: str,
-                    proj_instance: str,
-                    proj_region: str,
-                    user_id: str,
-                    query_id: str) -> None:
-    """Get a search query by ID from Chronicle.
+def get_search_query(http_session: requests.AuthorizedSession, proj_id: str,
+                     proj_instance: str, proj_region: str, user_id: str,
+                     query_id: str) -> None:
+  """Get a search query by ID from Chronicle.
 
     Args:
         http_session: Authorized session for HTTP requests.
@@ -59,44 +56,42 @@ def get_search_query(http_session: requests.AuthorizedSession,
     Requires the following IAM permission on the instance resource:
     chronicle.searchQueries.get
     """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{instance}/users/{user_id}/searchQueries/{query_id}"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
+  instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{instance}/users/{user_id}/searchQueries/{query_id}"
+  # pylint: enable=line-too-long
 
-    response = http_session.request("GET", url)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
+  response = http_session.request("GET", url)
+  if response.status_code >= 400:
     print(response.text)
+  response.raise_for_status()
+  print(response.text)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    # common
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    regions.add_argument_region(parser)
-    # local
-    parser.add_argument(
-        "--user_id",
-        type=str,
-        required=True,
-        help="ID of the user who owns the search query"
-    )
-    parser.add_argument(
-        "--query_id",
-        type=str,
-        required=True,
-        help="ID of the search query to retrieve"
-    )
+  parser = argparse.ArgumentParser()
+  # common
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  regions.add_argument_region(parser)
+  # local
+  parser.add_argument("--user_id",
+                      type=str,
+                      required=True,
+                      help="ID of the user who owns the search query")
+  parser.add_argument("--query_id",
+                      type=str,
+                      required=True,
+                      help="ID of the search query to retrieve")
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file,
-        SCOPES,
-    )
-    get_search_query(auth_session, args.project_id, args.project_instance,
-                    args.region, args.user_id, args.query_id)
+  auth_session = chronicle_auth.initialize_http_session(
+      args.credentials_file,
+      SCOPES,
+  )
+  get_search_query(auth_session, args.project_id, args.project_instance,
+                   args.region, args.user_id, args.query_id)
