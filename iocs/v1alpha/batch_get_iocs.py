@@ -15,7 +15,7 @@
 # limitations under the License.
 """Get multiple IoCs from Chronicle."""
 
-from typing import List
+from typing import List, Mapping, Any
 
 from common import regions
 from google.auth.transport import requests
@@ -30,7 +30,7 @@ def batch_get_iocs(
     proj_region: str,
     ioc_values: List[str],
     ioc_type: str,
-) -> dict:
+) -> Mapping[str, Any]:
   """Get multiple IoCs by their values from Chronicle.
 
     Args:

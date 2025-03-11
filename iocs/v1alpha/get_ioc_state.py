@@ -17,6 +17,7 @@
 
 from common import regions
 from google.auth.transport import requests
+from typing import Any, Mapping
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 
@@ -28,7 +29,7 @@ def get_ioc_state(
     proj_region: str,
     ioc_value: str,
     ioc_type: str,
-) -> dict:
+) -> Mapping[str, Any]:
   """Get the state of an IoC by its value from Chronicle.
 
     Args:
