@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2025 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@ import json
 import sys
 from typing import Any, Mapping, Optional, Sequence
 
+from google.auth.transport import requests
+
 from common import chronicle_auth
 from common import datetime_converter
 from common import regions
-from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://backstory.googleapis.com"
 
