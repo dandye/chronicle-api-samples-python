@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Chronicle Ingestion API commands."""
 
 import json
@@ -32,8 +31,8 @@ SCOPES = [
 
 @click.group()
 def ingestion():
-    """Ingestion API commands."""
-    pass
+  """Ingestion API commands."""
+  pass
 
 
 @ingestion.command("import-events")
@@ -44,18 +43,18 @@ def ingestion():
 )
 @click.pass_context
 def import_events_cmd(ctx, json_events):
-    """Import events into Chronicle."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    event_import.import_events(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        json_events,
-    )
+  """Import events into Chronicle."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  event_import.import_events(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      json_events,
+  )
 
 
 @ingestion.command("get-event")
@@ -66,18 +65,18 @@ def import_events_cmd(ctx, json_events):
 )
 @click.pass_context
 def get_event_cmd(ctx, event_id):
-    """Get event details by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    events_get.get_event(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        event_id,
-    )
+  """Get event details by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  events_get.get_event(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      event_id,
+  )
 
 
 @ingestion.command("batch-get-events")
@@ -88,15 +87,15 @@ def get_event_cmd(ctx, event_id):
 )
 @click.pass_context
 def batch_get_events_cmd(ctx, event_ids):
-    """Batch get events by IDs."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    events_batch_get.batch_get_events(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        event_ids,
-    )
+  """Batch get events by IDs."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  events_batch_get.batch_get_events(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      event_ids,
+  )

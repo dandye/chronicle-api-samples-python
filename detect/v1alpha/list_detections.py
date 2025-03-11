@@ -72,7 +72,7 @@ def list_detections(http_session: requests.AuthorizedSession,
                     alert_state: str | None = None,
                     page_size: int | None = None,
                     page_token: str | None = None) -> Mapping[str, Any]:
-    """List detections for a rule.
+  """List detections for a rule.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -93,77 +93,76 @@ def list_detections(http_session: requests.AuthorizedSession,
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
   """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, args.region)
-    # pylint: disable-next=line-too-long
-    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacySearchDetections"
-    params = {
-        "rule_id": rule_id,
-    }
-    if alert_state:
-        params["alertState"] = alert_state
-    if page_size:
-        params["pageSize"] = page_size
-    if page_token:
-        params["pageToken"] = page_token
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, args.region)
+  # pylint: disable-next=line-too-long
+  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacySearchDetections"
+  params = {
+      "rule_id": rule_id,
+  }
+  if alert_state:
+    params["alertState"] = alert_state
+  if page_size:
+    params["pageSize"] = page_size
+  if page_token:
+    params["pageToken"] = page_token
 
-    # See API reference links at top of this file, for response format.
-    response = http_session.request("GET", url, params=params)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
-    return response.json()
+  # See API reference links at top of this file, for response format.
+  response = http_session.request("GET", url, params=params)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
+  return response.json()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    chronicle_auth.add_argument_credentials_file(parser)
-    regions.add_argument_region(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    parser.add_argument(
-        "-rid",
-        "--rule_id",
-        type=str,
-        required=True,
-        help=(
-            "rule id to list detections for. Options are (1) rule_id (2)"
+  parser = argparse.ArgumentParser()
+  chronicle_auth.add_argument_credentials_file(parser)
+  regions.add_argument_region(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  parser.add_argument(
+      "-rid",
+      "--rule_id",
+      type=str,
+      required=True,
+      help=("rule id to list detections for. Options are (1) rule_id (2)"
             " rule_id@v_<seconds>_<nanoseconds> (3) rule_id@- which matches on"
             " all versions."),
-    )
-    parser.add_argument(
-        "--alert_state",
-        choices=ALERT_STATES,
-        required=False,
-        default=None,
-    )
-    parser.add_argument(
-        "--page_size",
-        type=int,
-        required=False,
-        default=None,
-    )
-    parser.add_argument(
-        "--page_token",
-        type=str,
-        required=False,
-        default=None,
-    )
-    args = parser.parse_args()
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file, SCOPES)
-    print(
-        json.dumps(
-            list_detections(
-                auth_session,
-                args.region,
-                args.project_id,
-                args.project_instance,
-                args.rule_id,
-                args.alert_state,
-                args.page_size,
-                args.page_token,
-            ),
-            indent=2,
-        ))
+  )
+  parser.add_argument(
+      "--alert_state",
+      choices=ALERT_STATES,
+      required=False,
+      default=None,
+  )
+  parser.add_argument(
+      "--page_size",
+      type=int,
+      required=False,
+      default=None,
+  )
+  parser.add_argument(
+      "--page_token",
+      type=str,
+      required=False,
+      default=None,
+  )
+  args = parser.parse_args()
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
+  print(
+      json.dumps(
+          list_detections(
+              auth_session,
+              args.region,
+              args.project_id,
+              args.project_instance,
+              args.rule_id,
+              args.alert_state,
+              args.page_size,
+              args.page_token,
+          ),
+          indent=2,
+      ))

@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Get a single IoC from Chronicle."""
 
 from common import regions
@@ -30,7 +29,7 @@ def get_ioc(
     ioc_value: str,
     ioc_type: str,
 ) -> dict:
-    """Get a single IoC by its value from Chronicle.
+  """Get a single IoC by its value from Chronicle.
 
     Args:
         http_session: Authorized session for HTTP requests.
@@ -58,13 +57,13 @@ def get_ioc(
         requests.exceptions.HTTPError: HTTP request resulted in an error
             (response.status_code >= 400).
     """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{instance}/iocs/{ioc_type}/{ioc_value}"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{instance}/iocs/{ioc_type}/{ioc_value}"
 
-    response = http_session.request("GET", url)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
-    return response.json()
+  response = http_session.request("GET", url)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
+  return response.json()

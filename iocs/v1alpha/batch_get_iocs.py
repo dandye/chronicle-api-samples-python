@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Get multiple IoCs from Chronicle."""
 
 from typing import List
@@ -32,7 +31,7 @@ def batch_get_iocs(
     ioc_values: List[str],
     ioc_type: str,
 ) -> dict:
-    """Get multiple IoCs by their values from Chronicle.
+  """Get multiple IoCs by their values from Chronicle.
 
     Args:
         http_session: Authorized session for HTTP requests.
@@ -60,22 +59,22 @@ def batch_get_iocs(
         requests.exceptions.HTTPError: HTTP request resulted in an error
             (response.status_code >= 400).
     """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{instance}/iocs:batchGet"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{instance}/iocs:batchGet"
 
-    body = {
-        "ioc_values": ioc_values,
-        "ioc_type": ioc_type,
-    }
+  body = {
+      "ioc_values": ioc_values,
+      "ioc_type": ioc_type,
+  }
 
-    response = http_session.request(
-        "POST",
-        url,
-        json=body,
-    )
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
-    return response.json()
+  response = http_session.request(
+      "POST",
+      url,
+      json=body,
+  )
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
+  return response.json()

@@ -37,13 +37,10 @@ SCOPES = [
 ]
 
 
-def import_events(
-    http_session: requests.AuthorizedSession,
-    proj_id: str,
-    proj_instance: str,
-    proj_region: str,
-    json_events: str) -> None:
-    """Import events into Chronicle using the Events Import API.
+def import_events(http_session: requests.AuthorizedSession, proj_id: str,
+                  proj_instance: str, proj_region: str,
+                  json_events: str) -> None:
+  """Import events into Chronicle using the Events Import API.
 
     Args:
         http_session: Authorized session for HTTP requests.
@@ -59,51 +56,46 @@ def import_events(
     Requires the following IAM permission on the parent resource:
     chronicle.events.import
     """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL,
-        proj_region
-    )
-    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{parent}/events:import"
-    
-    body = {
-        "events": json.loads(json_events),
-    }
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{parent}/events:import"
 
-    response = http_session.request("POST", url, json=body)
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
-    
-    result = response.json()
-    if "successCount" in result:
-        print(f"Successfully imported {result['successCount']} events")
-    if "failureCount" in result:
-        print(f"Failed to import {result['failureCount']} events")
+  body = {
+      "events": json.loads(json_events),
+  }
+
+  response = http_session.request("POST", url, json=body)
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
+
+  result = response.json()
+  if "successCount" in result:
+    print(f"Successfully imported {result['successCount']} events")
+  if "failureCount" in result:
+    print(f"Failed to import {result['failureCount']} events")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    # common
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    regions.add_argument_region(parser)
-    # local
-    parser.add_argument(
-        "--json_events_file",
-        type=argparse.FileType("r"),
-        required=True,
-        help="path to a file (or \"-\" for STDIN) containing events in JSON format")
+  parser = argparse.ArgumentParser()
+  # common
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  regions.add_argument_region(parser)
+  # local
+  parser.add_argument(
+      "--json_events_file",
+      type=argparse.FileType("r"),
+      required=True,
+      help="path to a file (or \"-\" for STDIN) containing events in JSON format"
+  )
 
-    args = parser.parse_args()
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file,
-        SCOPES,
-    )
-    import_events(
-        auth_session,
-        args.project_id,
-        args.project_instance,
-        args.region,
-        args.json_events_file.read())
+  args = parser.parse_args()
+  auth_session = chronicle_auth.initialize_http_session(
+      args.credentials_file,
+      SCOPES,
+  )
+  import_events(auth_session, args.project_id, args.project_instance,
+                args.region, args.json_events_file.read())

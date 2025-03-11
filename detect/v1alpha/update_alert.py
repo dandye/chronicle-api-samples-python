@@ -96,124 +96,124 @@ VERDICT_ENUM = (
 
 
 def get_update_parser():
-    """Returns an argparse.ArgumentParser for the update_alert command."""
-    parser = argparse.ArgumentParser()
-    chronicle_auth.add_argument_credentials_file(parser)
-    project_instance.add_argument_project_instance(parser)
-    project_id.add_argument_project_id(parser)
-    regions.add_argument_region(parser)
-    parser.add_argument(
-        "--comment",
-        type=str,
-        required=False,
-        default=None,
-        help="Analyst comment.",
-    )
-    parser.add_argument(
-        "--confidence_score",
-        type=int,
-        required=False,
-        default=None,
-        help="confidence score [1-100] of the finding",
-    )
-    parser.add_argument(
-        "--disregarded",
-        type=bool,
-        required=False,
-        default=None,
-        help="Analyst disregard (or un-disregard) the event",
-    )
-    parser.add_argument(
-        "--priority",
-        choices=PRIORITY_ENUM,
-        required=False,
-        default=None,
-        help="alert priority.",
-    )
-    parser.add_argument(
-        "--reason",
-        choices=REASON_ENUM,
-        required=False,
-        default=None,
-        help="reason for closing an Alert",
-    )
-    parser.add_argument(
-        "--reputation",
-        choices=REPUTATION_ENUM,
-        required=False,
-        default=None,
-        help="A categorization of the finding as useful or not useful",
-    )
-    parser.add_argument(
-        "--risk_score",
-        type=int,
-        required=False,
-        default=None,
-        help="risk score [0-100] of the finding",
-    )
-    parser.add_argument(
-        "--root_cause",
-        type=str,
-        required=False,
-        default=None,
-        help="Alert root cause.",
-    )
-    parser.add_argument(
-        "--status",
-        choices=STATUS_ENUM,
-        required=False,
-        default=None,
-        help="alert status",
-    )
-    parser.add_argument(
-        "--verdict",
-        choices=VERDICT_ENUM,
-        required=False,
-        default=None,
-        help="a verdict on whether the finding reflects a security incident",
-    )
-    parser.add_argument(
-        "--severity",
-        type=int,
-        required=False,
-        default=None,
-        help="severity score [0-100] of the finding",
-    )
-    return parser
+  """Returns an argparse.ArgumentParser for the update_alert command."""
+  parser = argparse.ArgumentParser()
+  chronicle_auth.add_argument_credentials_file(parser)
+  project_instance.add_argument_project_instance(parser)
+  project_id.add_argument_project_id(parser)
+  regions.add_argument_region(parser)
+  parser.add_argument(
+      "--comment",
+      type=str,
+      required=False,
+      default=None,
+      help="Analyst comment.",
+  )
+  parser.add_argument(
+      "--confidence_score",
+      type=int,
+      required=False,
+      default=None,
+      help="confidence score [1-100] of the finding",
+  )
+  parser.add_argument(
+      "--disregarded",
+      type=bool,
+      required=False,
+      default=None,
+      help="Analyst disregard (or un-disregard) the event",
+  )
+  parser.add_argument(
+      "--priority",
+      choices=PRIORITY_ENUM,
+      required=False,
+      default=None,
+      help="alert priority.",
+  )
+  parser.add_argument(
+      "--reason",
+      choices=REASON_ENUM,
+      required=False,
+      default=None,
+      help="reason for closing an Alert",
+  )
+  parser.add_argument(
+      "--reputation",
+      choices=REPUTATION_ENUM,
+      required=False,
+      default=None,
+      help="A categorization of the finding as useful or not useful",
+  )
+  parser.add_argument(
+      "--risk_score",
+      type=int,
+      required=False,
+      default=None,
+      help="risk score [0-100] of the finding",
+  )
+  parser.add_argument(
+      "--root_cause",
+      type=str,
+      required=False,
+      default=None,
+      help="Alert root cause.",
+  )
+  parser.add_argument(
+      "--status",
+      choices=STATUS_ENUM,
+      required=False,
+      default=None,
+      help="alert status",
+  )
+  parser.add_argument(
+      "--verdict",
+      choices=VERDICT_ENUM,
+      required=False,
+      default=None,
+      help="a verdict on whether the finding reflects a security incident",
+  )
+  parser.add_argument(
+      "--severity",
+      type=int,
+      required=False,
+      default=None,
+      help="severity score [0-100] of the finding",
+  )
+  return parser
 
 
 def check_args(parser: argparse.ArgumentParser,
                args_to_check: argparse.Namespace):
-    """Checks if at least one of the required arguments is provided.
+  """Checks if at least one of the required arguments is provided.
 
   Args:
     parser: instance of argparse.ArgumentParser (to raise error if needed).
     args_to_check: instance of argparse.Namespace with the arguments to check.
   """
-    if not any([
-            args_to_check.comment or args_to_check.comment == "",  # pylint: disable=g-explicit-bool-comparison
-            args_to_check.disregarded,
-            args_to_check.priority,
-            args_to_check.reason,
-            args_to_check.reputation,
-            args_to_check.risk_score or args_to_check.risk_score == 0,
-            args_to_check.root_cause or args_to_check.root_cause == "",  # pylint: disable=g-explicit-bool-comparison
-            args_to_check.severity or args_to_check.severity == 0,
-            args_to_check.status,
-            args_to_check.verdict,
-    ]):
-        parser.error("At least one of the arguments "
-                     "--comment, "
-                     "--disregarded, "
-                     "--priority, "
-                     "--reason, "
-                     "--reputation, "
-                     "--risk_score, "
-                     "--root_cause, "
-                     "--severity, "
-                     "--status, "
-                     "or --verdict "
-                     "is required.")
+  if not any([
+      args_to_check.comment or args_to_check.comment == "",  # pylint: disable=g-explicit-bool-comparison
+      args_to_check.disregarded,
+      args_to_check.priority,
+      args_to_check.reason,
+      args_to_check.reputation,
+      args_to_check.risk_score or args_to_check.risk_score == 0,
+      args_to_check.root_cause or args_to_check.root_cause == "",  # pylint: disable=g-explicit-bool-comparison
+      args_to_check.severity or args_to_check.severity == 0,
+      args_to_check.status,
+      args_to_check.verdict,
+  ]):
+    parser.error("At least one of the arguments "
+                 "--comment, "
+                 "--disregarded, "
+                 "--priority, "
+                 "--reason, "
+                 "--reputation, "
+                 "--risk_score, "
+                 "--root_cause, "
+                 "--severity, "
+                 "--status, "
+                 "or --verdict "
+                 "is required.")
 
 
 def update_alert(
@@ -234,7 +234,7 @@ def update_alert(
     comment: str | Literal[""] | None = None,
     root_cause: str | Literal[""] | None = None,
 ) -> Mapping[str, Any]:
-    """Updates an Alert.
+  """Updates an Alert.
 
   Args:
     http_session: Authorized session for HTTP requests.
@@ -261,82 +261,82 @@ def update_alert(
     requests.exceptions.HTTPError: HTTP request resulted in an error
       (response.status_code >= 400).
   """
-    base_url_with_region = regions.url_always_prepend_region(
-        CHRONICLE_API_BASE_URL, proj_region)
-    # pylint: disable-next=line-too-long
-    parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
-    url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyUpdateAlert/"
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable-next=line-too-long
+  parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
+  url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyUpdateAlert/"
 
-    feedback = {}
-    if confidence_score or confidence_score == 0:
-        feedback["confidence_score"] = confidence_score
-    if reason:
-        feedback["reason"] = reason
-    if reputation:
-        feedback["reputation"] = reputation
-    if priority:
-        feedback["priority"] = priority
-    if status:
-        feedback["status"] = status
-    if verdict:
-        feedback["verdict"] = verdict
-    if risk_score or risk_score == 0:
-        feedback["risk_score"] = risk_score
-    if disregarded:
-        feedback["disregarded"] = disregarded
-    if severity or severity == 0:
-        feedback["severity"] = severity
-    if comment or comment == "":  # pylint: disable=g-explicit-bool-comparison
-        feedback["comment"] = comment
-    if root_cause or root_cause == "":  # pylint: disable=g-explicit-bool-comparison
-        feedback["root_cause"] = root_cause
+  feedback = {}
+  if confidence_score or confidence_score == 0:
+    feedback["confidence_score"] = confidence_score
+  if reason:
+    feedback["reason"] = reason
+  if reputation:
+    feedback["reputation"] = reputation
+  if priority:
+    feedback["priority"] = priority
+  if status:
+    feedback["status"] = status
+  if verdict:
+    feedback["verdict"] = verdict
+  if risk_score or risk_score == 0:
+    feedback["risk_score"] = risk_score
+  if disregarded:
+    feedback["disregarded"] = disregarded
+  if severity or severity == 0:
+    feedback["severity"] = severity
+  if comment or comment == "":  # pylint: disable=g-explicit-bool-comparison
+    feedback["comment"] = comment
+  if root_cause or root_cause == "":  # pylint: disable=g-explicit-bool-comparison
+    feedback["root_cause"] = root_cause
 
-    payload = {
-        "alert_id": alert_id,
-        "feedback": feedback,
-    }
+  payload = {
+      "alert_id": alert_id,
+      "feedback": feedback,
+  }
 
-    response = http_session.request("POST", url, json=payload)
+  response = http_session.request("POST", url, json=payload)
 
-    # Expected server response is described in:
-    # https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyUpdateAlert
-    if response.status_code >= 400:
-        print(response.text)
-    response.raise_for_status()
-    return response.json()
+  # Expected server response is described in:
+  # https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyUpdateAlert
+  if response.status_code >= 400:
+    print(response.text)
+  response.raise_for_status()
+  return response.json()
 
 
 if __name__ == "__main__":
-    main_parser = get_update_parser()
-    main_parser.add_argument("--alert_id",
-                             type=str,
-                             required=True,
-                             help="identifier for the alert")
-    args = main_parser.parse_args()
+  main_parser = get_update_parser()
+  main_parser.add_argument("--alert_id",
+                           type=str,
+                           required=True,
+                           help="identifier for the alert")
+  args = main_parser.parse_args()
 
-    # Check if at least one of the specific arguments is provided
-    check_args(main_parser, args)
+  # Check if at least one of the specific arguments is provided
+  check_args(main_parser, args)
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file,
-        SCOPES,
-    )
-    a_list = update_alert(
-        auth_session,
-        args.project_id,
-        args.project_instance,
-        args.region,
-        args.alert_id,
-        args.confidence_score,
-        args.reason,
-        args.reputation,
-        args.priority,
-        args.status,
-        args.verdict,
-        args.risk_score,
-        args.disregarded,
-        args.severity,
-        args.comment,
-        args.root_cause,
-    )
-    print(json.dumps(a_list, indent=2))
+  auth_session = chronicle_auth.initialize_http_session(
+      args.credentials_file,
+      SCOPES,
+  )
+  a_list = update_alert(
+      auth_session,
+      args.project_id,
+      args.project_instance,
+      args.region,
+      args.alert_id,
+      args.confidence_score,
+      args.reason,
+      args.reputation,
+      args.priority,
+      args.status,
+      args.verdict,
+      args.risk_score,
+      args.disregarded,
+      args.severity,
+      args.comment,
+      args.root_cause,
+  )
+  print(json.dumps(a_list, indent=2))

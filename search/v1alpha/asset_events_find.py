@@ -82,10 +82,8 @@ def find_asset_events(http_session: requests.AuthorizedSession,
       datetime.strptime(time_str, "%Y-%m-%dT%H:%M:%SZ")
     except ValueError as e:
       if "does not match format" in str(e):
-        raise ValueError(
-            f"Time '{time_str}' must be in RFC3339 format "
-            "(e.g., '2024-01-01T00:00:00Z')"
-        ) from e
+        raise ValueError(f"Time '{time_str}' must be in RFC3339 format "
+                         "(e.g., '2024-01-01T00:00:00Z')") from e
       raise
 
   base_url_with_region = regions.url_always_prepend_region(
@@ -118,10 +116,8 @@ def find_asset_events(http_session: requests.AuthorizedSession,
   print(json.dumps(result, indent=2))
 
   if result.get("more_data_available"):
-    print(
-        "\nWarning: More data is available but was not returned due to "
-        "maxResults limit."
-    )
+    print("\nWarning: More data is available but was not returned due to "
+          "maxResults limit.")
 
   if result.get("uri"):
     print("\nBackstory UI URLs:")
@@ -137,14 +133,11 @@ if __name__ == "__main__":
   project_id.add_argument_project_id(parser)
   regions.add_argument_region(parser)
   # local
-  parser.add_argument(
-      "--asset_indicator",
-      type=str,
-      required=True,
-      help=
-      "JSON string containing the asset indicator "
-      "(e.g., '{\"hostname\": \"example.com\"}')"
-  )
+  parser.add_argument("--asset_indicator",
+                      type=str,
+                      required=True,
+                      help="JSON string containing the asset indicator "
+                      "(e.g., '{\"hostname\": \"example.com\"}')")
   parser.add_argument(
       "--start_time",
       type=str,
@@ -162,10 +155,8 @@ if __name__ == "__main__":
   parser.add_argument(
       "--max_results",
       type=int,
-      help=
-      "Maximum number of results to return "
-      f"(default: {DEFAULT_MAX_RESULTS}, max: {MAX_RESULTS_LIMIT})"
-  )
+      help="Maximum number of results to return "
+      f"(default: {DEFAULT_MAX_RESULTS}, max: {MAX_RESULTS_LIMIT})")
 
   args = parser.parse_args()
 

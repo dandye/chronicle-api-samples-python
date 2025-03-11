@@ -26,11 +26,10 @@ import json
 import sys
 from typing import Any, Mapping, Optional, Sequence
 
-from google.auth.transport import requests
-
 from common import chronicle_auth
 from common import datetime_converter
 from common import regions
+from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://backstory.googleapis.com"
 

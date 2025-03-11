@@ -66,49 +66,49 @@ DEFAULT_FEEDBACK = {
 }
 
 if __name__ == "__main__":
-    parser = update_alert.get_update_parser()
-    # local
-    parser.add_argument("--alert_ids_file",
-                        type=str,
-                        required=True,
-                        help="Path to file containing one alert ID per line")
+  parser = update_alert.get_update_parser()
+  # local
+  parser.add_argument("--alert_ids_file",
+                      type=str,
+                      required=True,
+                      help="Path to file containing one alert ID per line")
 
-    # Set default values from DEFAULT_FEEDBACK
-    parser.set_defaults(
-        comment=DEFAULT_FEEDBACK["comment"],
-        reason=DEFAULT_FEEDBACK["reason"],
-        reputation=DEFAULT_FEEDBACK["reputation"],
-        root_cause=DEFAULT_FEEDBACK["root_cause"],
-        status=DEFAULT_FEEDBACK["status"],
-        verdict=DEFAULT_FEEDBACK["verdict"],
-    )
+  # Set default values from DEFAULT_FEEDBACK
+  parser.set_defaults(
+      comment=DEFAULT_FEEDBACK["comment"],
+      reason=DEFAULT_FEEDBACK["reason"],
+      reputation=DEFAULT_FEEDBACK["reputation"],
+      root_cause=DEFAULT_FEEDBACK["root_cause"],
+      status=DEFAULT_FEEDBACK["status"],
+      verdict=DEFAULT_FEEDBACK["verdict"],
+  )
 
-    args = parser.parse_args()
+  args = parser.parse_args()
 
-    # Validate required arguments
-    update_alert.check_args(parser, args)
+  # Validate required arguments
+  update_alert.check_args(parser, args)
 
-    auth_session = chronicle_auth.initialize_http_session(
-        args.credentials_file, SCOPES)
+  auth_session = chronicle_auth.initialize_http_session(args.credentials_file,
+                                                        SCOPES)
 
-    with open(args.alert_ids_file) as alert_file:
-        for alert_id in alert_file:
-            result = update_alert.update_alert(
-                auth_session,
-                args.project_id,
-                args.project_instance,
-                args.region,
-                alert_id.strip(),
-                args.confidence_score,
-                args.reason,
-                args.reputation,
-                args.priority,
-                args.status,
-                args.verdict,
-                args.risk_score,
-                args.disregarded,
-                args.severity,
-                args.comment,
-                args.root_cause,
-            )
-            print(json.dumps(result, indent=2))
+  with open(args.alert_ids_file) as alert_file:
+    for alert_id in alert_file:
+      result = update_alert.update_alert(
+          auth_session,
+          args.project_id,
+          args.project_instance,
+          args.region,
+          alert_id.strip(),
+          args.confidence_score,
+          args.reason,
+          args.reputation,
+          args.priority,
+          args.status,
+          args.verdict,
+          args.risk_score,
+          args.disregarded,
+          args.severity,
+          args.comment,
+          args.root_cause,
+      )
+      print(json.dumps(result, indent=2))
