@@ -37,29 +37,35 @@ SCOPES = [
 ]
 
 
-def import_events(http_session: requests.AuthorizedSession, proj_id: str,
-                  proj_instance: str, proj_region: str,
-                  json_events: str) -> None:
+def import_events(
+  http_session: requests.AuthorizedSession,
+  proj_id: str,
+  proj_instance: str,
+  proj_region: str,
+  json_events: str
+) -> None:
   """Import events into Chronicle using the Events Import API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: region in which the target project is located.
-        json_events: Events in (serialized) JSON format.
+  Args:
+      http_session: Authorized session for HTTP requests.
+      proj_id: GCP project id or number to which the target instance belongs.
+      proj_instance: Customer ID (uuid w/ dashes) for the Chronicle instance.
+      proj_region: region in which the target project is located.
+      json_events: Events in (serialized) JSON format.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+  Raises:
+      requests.exceptions.HTTPError: HTTP request resulted in an error
+          (response.status_code >= 400).
 
-    Requires the following IAM permission on the parent resource:
-    chronicle.events.import
+  Requires the following IAM permission on the parent resource:
+  chronicle.events.import
     """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{parent}/events:import"
+  # pylint: enable=line-too-long
 
   body = {
       "events": json.loads(json_events),
