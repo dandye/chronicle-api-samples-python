@@ -1,7 +1,7 @@
 """Common utilities for CLI commands."""
 
-import os
 from functools import wraps
+import os
 
 import click
 from dotenv import load_dotenv

@@ -59,7 +59,9 @@ def find_udm_events(http_session: requests.AuthorizedSession,
                     tokens: Optional[List[str]] = None,
                     event_ids: Optional[List[str]] = None,
                     return_unenriched_data: bool = False,
-                    return_all_events_for_log: bool = False) -> None:
+                    return_all_events_for_log: bool = False
+) -> None:
+  # pylint: disable=line-too-long
   """Find UDM events in Chronicle using the Legacy Find UDM Events API.
 
   Args:
@@ -80,12 +82,12 @@ def find_udm_events(http_session: requests.AuthorizedSession,
   Requires the following IAM permission on the parent resource:
   chronicle.events.batchGet
   """
+  # pylint: enable=line-too-long
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
-  # pylint: disable=line-too-long
+  # pylint: disable=line-too-long-next
   instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindUdmEvents"
-  # pylint: enable=line-too-long
 
   # Build query parameters
   params = []

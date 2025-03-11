@@ -41,20 +41,20 @@ def get_event(http_session: requests.AuthorizedSession, proj_id: str,
               proj_instance: str, proj_region: str, event_id: str) -> None:
   """Get event details from Chronicle using the Events Get API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: region in which the target project is located.
-        event_id: The ID of the event to retrieve.
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
+    proj_region: region in which the target project is located.
+    event_id: The ID of the event to retrieve.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
 
-    Requires the following IAM permission on the parent resource:
-    chronicle.events.get
-    """
+  Requires the following IAM permission on the parent resource:
+  chronicle.events.get
+  """
   # URL encode the event_id in Base64
   encoded_event_id = base64.urlsafe_b64encode(event_id.encode()).decode()
   base_url_with_region = regions.url_always_prepend_region(
