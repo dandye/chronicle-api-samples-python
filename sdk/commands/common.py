@@ -24,8 +24,8 @@ def add_common_options(func):
   """Adds common CLI options to a command.
 
   Adds standard Chronicle CLI options for region, project instance, project ID,
-  credentials file, and environment file. Values can be provided via command line
-  arguments or environment variables.
+  credentials file, and environment file. Values can be provided via command
+  line arguments or environment variables.
 
   Args:
     func: The function to wrap with common options.
@@ -38,22 +38,26 @@ def add_common_options(func):
   @click.option(
       "--region",
       required=False,
-      help="Region in which the target project is located. Can also be set via CHRONICLE_REGION env var.",
+      help="Region in which the target project is located. Can also be set "
+      "via CHRONICLE_REGION env var.",
   )
   @click.option(
       "--project-instance",
       required=False,
-      help="Customer ID (uuid with dashes) for the Chronicle instance. Can also be set via CHRONICLE_INSTANCE env var.",
+      help="Customer ID (uuid with dashes) for the Chronicle instance. "
+      "Can also be set via CHRONICLE_INSTANCE env var.",
   )
   @click.option(
       "--project-id",
       required=False,
-      help="GCP project id or number. Can also be set via CHRONICLE_PROJECT_ID env var.",
+      help="GCP project id or number. Can also be set via CHRONICLE_PROJECT_ID "
+      "env var.",
   )
   @click.option(
       "--credentials-file",
       required=False,
-      help="Path to service account credentials file. Can also be set via CHRONICLE_CREDENTIALS_FILE env var.",
+      help="Path to service account credentials file. Can also be set via "
+      "CHRONICLE_CREDENTIALS_FILE env var.",
   )
   @click.option(
       "--env-file",
@@ -73,7 +77,10 @@ def add_common_options(func):
 
     # Now validate required options
     missing = []
-    if not kwargs.get("credentials_file") and not get_env_value("CREDENTIALS_FILE"):
+    # pylint: disable=line-too-long
+    if not kwargs.get("credentials_file") and not get_env_value(
+        "CREDENTIALS_FILE"):
+      # pylint: enable=line-too-long
       missing.append("credentials-file (or CHRONICLE_CREDENTIALS_FILE)")
     if not kwargs.get("project_id") and not get_env_value("PROJECT_ID"):
       missing.append("project-id (or CHRONICLE_PROJECT_ID)")
@@ -85,8 +92,8 @@ def add_common_options(func):
     if missing:
       raise click.UsageError(
           f"Missing required options: {', '.join(missing)}\n"
-          "These can be provided via command line options or environment variables."
-      )
+          "These can be provided via command line options or environment "
+          "variables.")
 
     # If options not provided via CLI, get from environment
     if not kwargs.get("credentials_file"):

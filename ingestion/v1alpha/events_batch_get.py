@@ -38,9 +38,13 @@ SCOPES = [
 ]
 
 
-def batch_get_events(http_session: requests.AuthorizedSession, proj_id: str,
-                     proj_instance: str, proj_region: str,
-                     event_ids: str) -> None:
+def batch_get_events(
+    http_session: requests.AuthorizedSession,
+    proj_id: str,
+    proj_instance: str,
+    proj_region: str,
+    event_ids: str
+) -> None:
   """Batch get events from Chronicle using the Events BatchGet API.
 
     Args:

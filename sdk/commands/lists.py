@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Chronicle Lists API commands."""
 
 import json
@@ -36,8 +35,8 @@ SCOPES = [
 
 @click.group()
 def lists():
-    """Lists API commands."""
-    pass
+  """Lists API commands."""
+  pass
 
 
 @lists.command("create")
@@ -56,22 +55,23 @@ def lists():
     required=True,
     help="JSON array of strings to add to the list.",
 )
-def create_list_cmd(credentials_file, project_id, project_instance, region, name, description, lines):
-    """Create a new list."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = create_list.create_list(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        name,
-        description,
-        lines,
-    )
-    print(json.dumps(result, indent=2))
+def create_list_cmd(credentials_file, project_id, project_instance, region,
+                    name, description, lines):
+  """Create a new list."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = create_list.create_list(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      name,
+      description,
+      lines,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @lists.command("get")
@@ -81,20 +81,21 @@ def create_list_cmd(credentials_file, project_id, project_instance, region, name
     required=True,
     help="ID of the list to retrieve.",
 )
-def get_list_cmd(credentials_file, project_id, project_instance, region, list_id):
-    """Get a list by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = get_list.get_list(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        list_id,
-    )
-    print(json.dumps(result, indent=2))
+def get_list_cmd(credentials_file, project_id, project_instance, region,
+                 list_id):
+  """Get a list by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = get_list.get_list(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      list_id,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @lists.command("patch")
@@ -116,29 +117,30 @@ def get_list_cmd(credentials_file, project_id, project_instance, region, list_id
     "--lines-to-remove",
     help="JSON array of strings to remove from the list.",
 )
-def patch_list_cmd(credentials_file, project_id, project_instance, region, list_id, description, lines_to_add, lines_to_remove):
-    """Update an existing list."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = patch_list.patch_list(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        list_id,
-        description,
-        lines_to_add,
-        lines_to_remove,
-    )
-    print(json.dumps(result, indent=2))
+def patch_list_cmd(credentials_file, project_id, project_instance, region,
+                   list_id, description, lines_to_add, lines_to_remove):
+  """Update an existing list."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = patch_list.patch_list(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      list_id,
+      description,
+      lines_to_add,
+      lines_to_remove,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @lists.group()
 def reference():
-    """Reference Lists API commands."""
-    pass
+  """Reference Lists API commands."""
+  pass
 
 
 @reference.command("create")
@@ -158,8 +160,7 @@ def reference():
     type=click.Choice([
         "REFERENCE_LIST_SYNTAX_TYPE_UNSPECIFIED",
         "REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
-        "REFERENCE_LIST_SYNTAX_TYPE_REGEX",
-        "REFERENCE_LIST_SYNTAX_TYPE_CIDR"
+        "REFERENCE_LIST_SYNTAX_TYPE_REGEX", "REFERENCE_LIST_SYNTAX_TYPE_CIDR"
     ]),
     default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
     help="Type of entries in the list.",
@@ -172,30 +173,30 @@ def reference():
     "--description",
     help="Optional description of the reference list.",
 )
-def create_reference_list_cmd(credentials_file, project_id, project_instance, region,
-                             reference_list_id, entries, syntax_type, scope_names,
-                             description):
-    """Create a new reference list."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
+def create_reference_list_cmd(credentials_file, project_id, project_instance,
+                              region, reference_list_id, entries, syntax_type,
+                              scope_names, description):
+  """Create a new reference list."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
 
-    entries_list = json.loads(entries)
-    scope_names_list = json.loads(scope_names) if scope_names else None
+  entries_list = json.loads(entries)
+  scope_names_list = json.loads(scope_names) if scope_names else None
 
-    result = create_reference_list.create_reference_list(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        reference_list_id,
-        entries_list,
-        syntax_type,
-        scope_names_list,
-        description,
-    )
-    print(json.dumps(result, indent=2))
+  result = create_reference_list.create_reference_list(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      reference_list_id,
+      entries_list,
+      syntax_type,
+      scope_names_list,
+      description,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @reference.command("get")
@@ -205,21 +206,21 @@ def create_reference_list_cmd(credentials_file, project_id, project_instance, re
     required=True,
     help="ID of the reference list to retrieve.",
 )
-def get_reference_list_cmd(credentials_file, project_id, project_instance, region,
-                          reference_list_id):
-    """Get a reference list by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = get_reference_list.get_reference_list(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        reference_list_id,
-    )
-    print(json.dumps(result, indent=2))
+def get_reference_list_cmd(credentials_file, project_id, project_instance,
+                           region, reference_list_id):
+  """Get a reference list by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = get_reference_list.get_reference_list(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      reference_list_id,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @reference.command("list")
@@ -233,19 +234,19 @@ def get_reference_list_cmd(credentials_file, project_id, project_instance, regio
     "--page-token",
     help="Optional page token from a previous response for pagination.",
 )
-def list_reference_lists_cmd(credentials_file, project_id, project_instance, region,
-                            page_size, page_token):
-    """List reference lists."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    result = list_reference_lists.list_reference_lists(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        page_size,
-        page_token,
-    )
-    print(json.dumps(result, indent=2))
+def list_reference_lists_cmd(credentials_file, project_id, project_instance,
+                             region, page_size, page_token):
+  """List reference lists."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+  result = list_reference_lists.list_reference_lists(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      page_size,
+      page_token,
+  )
+  print(json.dumps(result, indent=2))

@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Chronicle Search API commands."""
 
 import json
@@ -33,8 +32,8 @@ SCOPES = [
 
 @click.group()
 def search():
-    """Search API commands."""
-    pass
+  """Search API commands."""
+  pass
 
 
 @search.command("find-asset-events")
@@ -63,23 +62,24 @@ def search():
     help="Optional page token from a previous response.",
 )
 @click.pass_context
-def find_asset_events_cmd(ctx, asset_indicator, start_time, end_time, page_size, page_token):
-    """Find asset events within a time range."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    asset_events_find.find_asset_events(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        asset_indicator,
-        start_time,
-        end_time,
-        page_size,
-        page_token,
-    )
+def find_asset_events_cmd(ctx, asset_indicator, start_time, end_time, page_size,
+                          page_token):
+  """Find asset events within a time range."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  asset_events_find.find_asset_events(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      asset_indicator,
+      start_time,
+      end_time,
+      page_size,
+      page_token,
+  )
 
 
 @search.command("find-raw-logs")
@@ -114,31 +114,33 @@ def find_asset_events_cmd(ctx, asset_indicator, start_time, end_time, page_size,
     help="Optional maximum response size in bytes.",
 )
 @click.pass_context
-def find_raw_logs_cmd(ctx, query, batch_tokens, log_ids, regex_search, case_sensitive, max_response_size):
-    """Find raw logs based on search criteria."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    raw_logs_find.find_raw_logs(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        query,
-        list(batch_tokens) if batch_tokens else None,
-        list(log_ids) if log_ids else None,
-        regex_search,
-        case_sensitive,
-        max_response_size,
-    )
+def find_raw_logs_cmd(ctx, query, batch_tokens, log_ids, regex_search,
+                      case_sensitive, max_response_size):
+  """Find raw logs based on search criteria."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  raw_logs_find.find_raw_logs(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      query,
+      list(batch_tokens) if batch_tokens else None,
+      list(log_ids) if log_ids else None,
+      regex_search,
+      case_sensitive,
+      max_response_size,
+  )
 
 
 @search.command("find-udm-events")
 @click.option(
     "--tokens",
     multiple=True,
-    help="Optional list of tokens, with each token referring to a group of UDM/Entity events.",
+    help=
+    "Optional list of tokens, with each token referring to a group of UDM/Entity events.",
 )
 @click.option(
     "--event-ids",
@@ -156,22 +158,23 @@ def find_raw_logs_cmd(ctx, query, batch_tokens, log_ids, regex_search, case_sens
     help="Return all events generated from the ingested log.",
 )
 @click.pass_context
-def find_udm_events_cmd(ctx, tokens, event_ids, return_unenriched_data, return_all_events_for_log):
-    """Find UDM events based on tokens or event IDs."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    udm_events_find.find_udm_events(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        list(tokens) if tokens else None,
-        list(event_ids) if event_ids else None,
-        return_unenriched_data,
-        return_all_events_for_log,
-    )
+def find_udm_events_cmd(ctx, tokens, event_ids, return_unenriched_data,
+                        return_all_events_for_log):
+  """Find UDM events based on tokens or event IDs."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  udm_events_find.find_udm_events(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      list(tokens) if tokens else None,
+      list(event_ids) if event_ids else None,
+      return_unenriched_data,
+      return_all_events_for_log,
+  )
 
 
 @search.command("get-search-query")
@@ -187,16 +190,16 @@ def find_udm_events_cmd(ctx, tokens, event_ids, return_unenriched_data, return_a
 )
 @click.pass_context
 def get_search_query_cmd(ctx, user_id, query_id):
-    """Get a search query by ID."""
-    auth_session = chronicle_auth.initialize_http_session(
-        ctx.obj["credentials_file"],
-        SCOPES,
-    )
-    search_query_get.get_search_query(
-        auth_session,
-        ctx.obj["project_id"],
-        ctx.obj["project_instance"],
-        ctx.obj["region"],
-        user_id,
-        query_id,
-    )
+  """Get a search query by ID."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  search_query_get.get_search_query(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      user_id,
+      query_id,
+  )

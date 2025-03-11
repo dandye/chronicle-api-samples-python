@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Chronicle IoCs API commands."""
 
 import json
@@ -33,8 +32,8 @@ SCOPES = [
 
 @click.group()
 def iocs():
-    """IoCs API commands."""
-    pass
+  """IoCs API commands."""
+  pass
 
 
 @iocs.command("batch-get")
@@ -57,30 +56,30 @@ def iocs():
         "FILE_HASH_MD5",
         "FILE_HASH_SHA1",
         "FILE_HASH_SHA256",
-        "IOC_TYPE_RESOURCE"
+        "IOC_TYPE_RESOURCE",
     ]),
     required=True,
     help="Type of IoCs being requested.",
 )
 def batch_get_iocs_cmd(credentials_file, project_id, project_instance, region,
-                      ioc_values, ioc_type):
-    """Get multiple IoCs by their values."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    
-    ioc_values_list = json.loads(ioc_values)
-    
-    result = batch_get_iocs.batch_get_iocs(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        ioc_values_list,
-        ioc_type,
-    )
-    print(json.dumps(result, indent=2))
+                       ioc_values, ioc_type):
+  """Get multiple IoCs by their values."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+
+  ioc_values_list = json.loads(ioc_values)
+
+  result = batch_get_iocs.batch_get_iocs(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      ioc_values_list,
+      ioc_type,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @iocs.command("get")
@@ -103,28 +102,28 @@ def batch_get_iocs_cmd(credentials_file, project_id, project_instance, region,
         "FILE_HASH_MD5",
         "FILE_HASH_SHA1",
         "FILE_HASH_SHA256",
-        "IOC_TYPE_RESOURCE"
+        "IOC_TYPE_RESOURCE",
     ]),
     required=True,
     help="Type of IoC being requested.",
 )
 def get_ioc_cmd(credentials_file, project_id, project_instance, region,
                 ioc_value, ioc_type):
-    """Get a single IoC by its value."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    
-    result = get_ioc.get_ioc(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        ioc_value,
-        ioc_type,
-    )
-    print(json.dumps(result, indent=2))
+  """Get a single IoC by its value."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+
+  result = get_ioc.get_ioc(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      ioc_value,
+      ioc_type,
+  )
+  print(json.dumps(result, indent=2))
 
 
 @iocs.command("get-state")
@@ -137,35 +136,27 @@ def get_ioc_cmd(credentials_file, project_id, project_instance, region,
 @click.option(
     "--ioc-type",
     type=click.Choice([
-        "IOC_TYPE_UNSPECIFIED",
-        "DOMAIN",
-        "IP",
-        "FILE_HASH",
-        "URL",
-        "USER_EMAIL",
-        "MUTEX",
-        "FILE_HASH_MD5",
-        "FILE_HASH_SHA1",
-        "FILE_HASH_SHA256",
-        "IOC_TYPE_RESOURCE"
+        "IOC_TYPE_UNSPECIFIED", "DOMAIN", "IP", "FILE_HASH", "URL",
+        "USER_EMAIL", "MUTEX", "FILE_HASH_MD5", "FILE_HASH_SHA1",
+        "FILE_HASH_SHA256", "IOC_TYPE_RESOURCE"
     ]),
     required=True,
     help="Type of IoC being requested.",
 )
 def get_ioc_state_cmd(credentials_file, project_id, project_instance, region,
-                     ioc_value, ioc_type):
-    """Get the state of an IoC by its value."""
-    auth_session = chronicle_auth.initialize_http_session(
-        credentials_file,
-        SCOPES,
-    )
-    
-    result = get_ioc_state.get_ioc_state(
-        auth_session,
-        project_id,
-        project_instance,
-        region,
-        ioc_value,
-        ioc_type,
-    )
-    print(json.dumps(result, indent=2))
+                      ioc_value, ioc_type):
+  """Get the state of an IoC by its value."""
+  auth_session = chronicle_auth.initialize_http_session(
+      credentials_file,
+      SCOPES,
+  )
+
+  result = get_ioc_state.get_ioc_state(
+      auth_session,
+      project_id,
+      project_instance,
+      region,
+      ioc_value,
+      ioc_type,
+  )
+  print(json.dumps(result, indent=2))
