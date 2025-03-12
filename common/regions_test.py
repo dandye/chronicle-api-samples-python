@@ -1,4 +1,4 @@
-# Copyright 2025 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import unittest
 
-import regions
+from . import regions
 
 
 class RegionsTest(unittest.TestCase):
@@ -26,32 +26,12 @@ class RegionsTest(unittest.TestCase):
         regions.url("https://test", "asia-southeast1"),
         "https://asia-southeast1-test")
 
-  def test_url_eu(self):
+  def test_url_europe(self):
     self.assertEqual(
-        regions.url("https://test", "eu"), "https://eu-test")
+        regions.url("https://test", "europe"), "https://europe-test")
 
   def test_url_us(self):
     self.assertEqual(regions.url("https://test", "us"), "https://test")
-
-  def test_url_always_prepend_region_us(self):
-    self.assertEqual(
-        regions.url_always_prepend_region("https://test", "us"),
-        "https://us-test",
-    )
-
-  def test_url_always_prepend_region_e(self):
-    self.assertEqual(
-        regions.url_always_prepend_region("https://test", "eu"),
-        "https://eu-test",
-    )
-
-  def test_url_always_prepend_region_twice(self):
-    url_once = regions.url_always_prepend_region("https://test", "eu")
-    url_twice = regions.url_always_prepend_region(url_once, "eu")
-    self.assertEqual(
-        "https://eu-test",
-        url_twice,
-    )
 
 
 if __name__ == "__main__":

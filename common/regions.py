@@ -1,4 +1,4 @@
-# Copyright 2025 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,22 +20,15 @@ For backward compatibility, the US region is considered as the default.
 import argparse
 
 REGION_LIST = (
-    "asia-northeast1",
     "asia-south1",
     "asia-southeast1",
     "australia-southeast1",
-    "eu",
     "europe",
-    "europe-west12",
     "europe-west2",
     "europe-west3",
     "europe-west6",
-    "europe-west9",
-    "me-central1",
     "me-central2",
     "me-west1",
-    "northamerica-northeast2",
-    "southamerica-east1",
     "us",
 )
 
@@ -56,23 +49,5 @@ def add_argument_region(parser: argparse.ArgumentParser):
 def url(base_url: str, region: str) -> str:
   """Returns a regionalized URL based on the default and the given region."""
   if region != "us":
-    base_url = base_url.replace("https://", f"https://{region}-")
-  return base_url
-
-
-def url_always_prepend_region(base_url: str, region: str) -> str:
-  """Returns a regionalized URL.
-
-  Args:
-    base_url: URL pointing to Chronicle API
-    region: region in which the target project is located
-
-  Returns:
-    A string containing a regionalized URL. Unlike the url() function,
-    this function always prepends region; this function also checks whether
-    the URL already has the region prefix, and if so, returns the URL unchanged.
-    v1alpha samples should use this function.
-  """
-  if not base_url.startswith(f"https://{region}-"):
     base_url = base_url.replace("https://", f"https://{region}-")
   return base_url
