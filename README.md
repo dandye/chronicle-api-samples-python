@@ -85,16 +85,18 @@ make dist
 
 ## Using the Chronicle REST API SDK
 
-The SDK provides a unified command-line interface for Chronicle APIs. The CLI follows this pattern:
+The SDK provides a unified command-line interface for Chronicle APIs.
+The CLI follows this pattern:
 ```
 chronicle [common options] COMMAND_GROUP COMMAND [command options]
 ```
 
 ### Common Options
 
-Common options can be provided either via command-line arguments or environment variables:
+Common options can be provided either via command-line arguments or environment
+variables:
 
-| CLI Option          | Environment Variable        | Description                    |
+| CLI Option         | Environment Variable        | Description                   |
 |--------------------|----------------------------|--------------------------------|
 | --credentials-file | CHRONICLE_CREDENTIALS_FILE | Path to service account file   |
 | --project-id       | CHRONICLE_PROJECT_ID       | GCP project id or number       |
@@ -112,7 +114,8 @@ CHRONICLE_REGION=your-region
 ```
 
 The SDK will use values from the `.env` file provided with the  --env-file flag.
-(It has trouble finding your local .env due to SDK Path issues, which we are working to resolve.)
+(It has trouble finding your local .env due to SDK Path issues, which we are
+working to resolve.)
  Command-line options take precedence over environment variables.
 
 ### Command Groups
@@ -123,6 +126,7 @@ chronicle detect <command-group> <command> [options]
 ```
 
 Available command groups:
+
 - `alerts`
   - `get <alert-id>`: Get alert by ID
   - `update <alert-id>`: Update an alert
@@ -155,6 +159,7 @@ chronicle ingestion <command> [options]
 ```
 
 Available commands:
+
 - `import-events`: Import events into Chronicle
 - `get-event <event-id>`: Get event details
 - `batch-get-events`: Batch retrieve events
@@ -165,6 +170,7 @@ chronicle search <command> [options]
 ```
 
 Available commands:
+
 - `find-asset-events [--filter <filter>]`: Find events for an asset
 - `find-raw-logs [--filter <filter>]`: Search raw logs
 - `find-udm-events [--filter <filter>]`: Find UDM events
@@ -175,9 +181,11 @@ chronicle lists <command> [options]
 ```
 
 Available commands:
+
 - `create <name> [--description <desc>] --lines <json-array>`: Create a new list
 - `get <list-id>`: Get list by ID
-- `patch <list-id> [--description <desc>] [--lines-to-add <json-array>] [--lines-to-remove <json-array>]`: Update an existing list
+- ```patch <list-id> [--description <desc>] [--lines-to-add <json-array>] \
+  [--lines-to-remove <json-array>]```: Update an existing list
 
 ### Examples
 
@@ -187,18 +195,23 @@ Using environment variables (after setting up .env):
 chronicle detect alerts get --alert-id ABC123 --env-file=.env
 
 # Create a list
-chronicle lists create --name "blocklist" --description "Blocked IPs" --lines '["1.1.1.1", "2.2.2.2"]' --env-file=.env
+chronicle lists create --name "blocklist" --description "Blocked IPs" \
+ --lines '["1.1.1.1", "2.2.2.2"]' \
+ --env-file=.env
 
 # Search for events
-chronicle search find-raw-logs --filter "timestamp.seconds > 1600000000" --env-file=.env
+chronicle search find-raw-logs --filter "timestamp.seconds > 1600000000" \
+ --env-file=.env
 
 # Override a specific environment variable
-chronicle --region us-central1 detect alerts get --alert-id ABC123 --env-file=.env
+chronicle --region us-central1 detect alerts get --alert-id ABC123 \
+ --env-file=.env
 ```
 
 ## Running Individual Scripts
 
-You can also run individual API sample scripts directly. Each script supports the `-h` flag to show available options:
+You can also run individual API sample scripts directly.
+Each script supports the `-h` flag to show available options:
 
 ```bash
 # Get help for a specific script
