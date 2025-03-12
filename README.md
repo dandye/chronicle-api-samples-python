@@ -30,15 +30,7 @@ samples try to use the file `.chronicle_credentials.json` in the user's home
 directory. If this file is not found, you need to specify it explicitly by
 adding the following argument to the sample's command-line:
 
-```shell
--c <file_path>
-```
-
-or
-
-```shell
---credentials_file <file_path>
-```
+`shell -c <file_path>` or `shell --credentials_file <file_path>`
 
 ## Usage
 
