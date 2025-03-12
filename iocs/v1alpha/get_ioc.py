@@ -15,8 +15,9 @@
 # limitations under the License.
 """Get a single IoC from Chronicle."""
 
-from common import regions
 from typing import Any, Mapping
+
+from common import regions
 from google.auth.transport import requests
 
 CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"

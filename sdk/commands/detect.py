@@ -19,8 +19,6 @@ import json
 
 import click
 from common import chronicle_auth
-from sdk.commands.common import add_common_options
-
 from detect.v1alpha import batch_update_curated_rule_set_deployments
 from detect.v1alpha import bulk_update_alerts
 from detect.v1alpha import create_retrohunt
@@ -35,6 +33,7 @@ from detect.v1alpha import list_detections
 from detect.v1alpha import list_errors
 from detect.v1alpha import list_rules
 from detect.v1alpha import update_alert
+from sdk.commands.common import add_common_options
 
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",

@@ -34,5 +34,7 @@ setup(
     entry_points={
         "console_scripts": ["chronicle=sdk.cli:cli",],
     },
-    python_requires=">=3.7",
+    exclude_package_data={"": [".gitignore"]},
+    python_requires=">=3.12",
+    license="Apache 2.0",
 )
