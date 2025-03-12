@@ -15,8 +15,6 @@
 # limitations under the License.
 """Chronicle Search API commands."""
 
-import json
-
 import click
 from common import chronicle_auth
 
@@ -140,7 +138,8 @@ def find_raw_logs_cmd(ctx, query, batch_tokens, log_ids, regex_search,
     "--tokens",
     multiple=True,
     help=
-    "Optional list of tokens, with each token referring to a group of UDM/Entity events.",
+    "Optional list of tokens, with each token referring to a group of "
+    "UDM/Entity events.",
 )
 @click.option(
     "--event-ids",

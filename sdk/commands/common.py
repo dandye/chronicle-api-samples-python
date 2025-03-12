@@ -1,6 +1,6 @@
 """Common utilities for CLI commands."""
 
-from functools import wraps
+import functools
 import os
 
 import click
@@ -64,7 +64,7 @@ def add_common_options(func):
       required=False,
       help="Path to .env file containing configuration variables.",
   )
-  @wraps(func)
+  @functools.wraps(func)
   def wrapper(*args, **kwargs):
     # Load environment variables from .env file
     env_file = kwargs.pop("env_file", None)
