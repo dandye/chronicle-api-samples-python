@@ -21,7 +21,7 @@ import unittest
 from unittest import mock
 from google.oauth2 import service_account
 
-from . import chronicle_auth
+import chronicle_auth
 
 
 class ChronicleAuthTest(unittest.TestCase):
