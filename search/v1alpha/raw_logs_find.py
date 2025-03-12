@@ -50,30 +50,33 @@ def find_raw_logs(http_session: requests.AuthorizedSession,
                   regex_search: bool = False,
                   case_sensitive: bool = False,
                   max_response_size: Optional[int] = None) -> None:
+  # pylint: disable=line-too-long
   """Find raw logs in Chronicle using the Legacy Find Raw Logs API.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
-        proj_region: region in which the target project is located.
-        query: Required search parameters that expand or restrict the search.
-        batch_tokens: Optional list of tokens that should be downloaded.
-        log_ids: Optional list of raw log ids that should be downloaded.
-            If both batch_tokens and log_ids are provided, batch_tokens will be discarded.
-        regex_search: Optional boolean to treat query as regex. Default is False.
-        case_sensitive: Optional boolean for case-sensitive search. Default is False.
-        max_response_size: Optional maximum response size in bytes. Default is 50MiB.
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
+    proj_region: region in which the target project is located.
+    query: Required search parameters that expand or restrict the search.
+    batch_tokens: Optional list of tokens that should be downloaded.
+    log_ids: Optional list of raw log ids that should be downloaded.
+        If both batch_tokens and log_ids are provided, batch_tokens will be discarded.
+    regex_search: Optional boolean to treat query as regex. Default is False.
+    case_sensitive: Optional boolean for case-sensitive search. Default is False.
+    max_response_size: Optional maximum response size in bytes. Default is 50MiB.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
 
-    Requires the following IAM permission on the instance resource:
-    chronicle.legacies.legacyFindRawLogs
-    """
+  Requires the following IAM permission on the instance resource:
+  chronicle.legacies.legacyFindRawLogs
+  """
+  # pylint: enable=line-too-long
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable-next=line-too-long
   instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{instance}/legacy:legacyFindRawLogs"
 
@@ -123,7 +126,8 @@ if __name__ == "__main__":
       "--batch_tokens",
       type=str,
       help=
-      'JSON string containing a list of batch tokens (e.g., \'["token1", "token2"]\')'
+      'JSON string containing a list of batch tokens '
+      ' (e.g., \'["token1", "token2"]\')'
   )
   parser.add_argument(
       "--log_ids",

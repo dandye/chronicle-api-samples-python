@@ -122,9 +122,9 @@ def update_alert_cmd(credentials_file, project_id, project_instance, region,
 @alerts.command("bulk-update")
 @add_common_options
 @click.option(
-    "--filter",
+    "--a_filter",
     required=True,
-    help="Filter to select alerts to update.",
+    help="a_filter to select alerts to update.",
 )
 @click.option(
     "--update-mask",
@@ -137,7 +137,7 @@ def update_alert_cmd(credentials_file, project_id, project_instance, region,
     help="JSON string containing the update data.",
 )
 def bulk_update_alerts_cmd(credentials_file, project_id, project_instance,
-                           region, filter, update_mask, json_body):
+                           region, a_filter, update_mask, json_body):
   """Bulk update alerts matching a filter."""
   auth_session = chronicle_auth.initialize_http_session(
       credentials_file,
@@ -148,7 +148,7 @@ def bulk_update_alerts_cmd(credentials_file, project_id, project_instance,
       project_id,
       project_instance,
       region,
-      filter,
+      a_filter,
       update_mask,
       json_body,
   )
@@ -195,8 +195,8 @@ def get_detection_cmd(credentials_file, project_id, project_instance, region,
 @detections.command("list")
 @add_common_options
 @click.option(
-    "--filter",
-    help="Filter string for the list request.",
+    "--a_filter",
+    help="a_filter string for the list request.",
 )
 @click.option(
     "--page-size",
@@ -208,7 +208,7 @@ def get_detection_cmd(credentials_file, project_id, project_instance, region,
     help="Page token from previous response.",
 )
 def list_detections_cmd(credentials_file, project_id, project_instance, region,
-                        filter, page_size, page_token):
+                        a_filter, page_size, page_token):
   """List detections."""
   auth_session = chronicle_auth.initialize_http_session(
       credentials_file,
@@ -219,7 +219,7 @@ def list_detections_cmd(credentials_file, project_id, project_instance, region,
       region,
       project_id,
       project_instance,
-      filter,
+      a_filter,
       page_size,
       page_token,
   )
@@ -331,8 +331,8 @@ def enable_rule_cmd(credentials_file, project_id, project_instance, region,
 @rules.command("list")
 @add_common_options
 @click.option(
-    "--filter",
-    help="Filter string for the list request.",
+    "--a_filter",
+    help="a_filter string for the list request.",
 )
 @click.option(
     "--page-size",
@@ -344,7 +344,7 @@ def enable_rule_cmd(credentials_file, project_id, project_instance, region,
     help="Page token from previous response.",
 )
 def list_rules_cmd(credentials_file, project_id, project_instance, region,
-                   filter, page_size, page_token):
+                   a_filter, page_size, page_token):
   """List rules."""
   auth_session = chronicle_auth.initialize_http_session(
       credentials_file,
@@ -355,7 +355,7 @@ def list_rules_cmd(credentials_file, project_id, project_instance, region,
       project_id,
       project_instance,
       region,
-      filter,
+      a_filter,
       page_size,
       page_token,
   )
@@ -427,8 +427,8 @@ def errors():
 @errors.command("list")
 @add_common_options
 @click.option(
-    "--filter",
-    help="Filter string for the list request.",
+    "--a_filter",
+    help="a_filter string for the list request.",
 )
 @click.option(
     "--page-size",
@@ -440,7 +440,7 @@ def errors():
     help="Page token from previous response.",
 )
 def list_errors_cmd(credentials_file, project_id, project_instance, region,
-                    filter, page_size, page_token):
+                    a_filter, page_size, page_token):
   """List errors."""
   auth_session = chronicle_auth.initialize_http_session(
       credentials_file,
@@ -451,7 +451,7 @@ def list_errors_cmd(credentials_file, project_id, project_instance, region,
       project_id,
       project_instance,
       region,
-      filter,
+      a_filter,
       page_size,
       page_token,
   )
@@ -479,6 +479,7 @@ def batch_update_rule_sets_cmd(credentials_file, project_id, project_instance,
       credentials_file,
       SCOPES,
   )
+  # pylint: disable-next=line-too-long
   result = batch_update_curated_rule_set_deployments.batch_update_curated_rule_set_deployments(
       auth_session,
       project_id,

@@ -33,32 +33,32 @@ def batch_get_iocs(
 ) -> Mapping[str, Any]:
   """Get multiple IoCs by their values from Chronicle.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the instance.
-        proj_region: region in which the target project is located.
-        ioc_values: List of IoC values to retrieve.
-        ioc_type: Type of IoCs being requested. One of:
-            IOC_TYPE_UNSPECIFIED
-            DOMAIN
-            IP
-            FILE_HASH
-            URL
-            USER_EMAIL
-            MUTEX
-            FILE_HASH_MD5
-            FILE_HASH_SHA1
-            FILE_HASH_SHA256
-            IOC_TYPE_RESOURCE
+  Args:
+    http_session: Authorized session for HTTP requests.
+    proj_id: GCP project id or number to which the target instance belongs.
+    proj_instance: Customer ID (uuid with dashes) for the instance.
+    proj_region: region in which the target project is located.
+    ioc_values: List of IoC values to retrieve.
+    ioc_type: Type of IoCs being requested. One of:
+      IOC_TYPE_UNSPECIFIED
+      DOMAIN
+      IP
+      FILE_HASH
+      URL
+      USER_EMAIL
+      MUTEX
+      FILE_HASH_MD5
+      FILE_HASH_SHA1
+      FILE_HASH_SHA256
+      IOC_TYPE_RESOURCE
 
-    Returns:
-        Dict containing the requested IoCs.
+  Returns:
+    Dict containing the requested IoCs.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
-    """
+  Raises:
+    requests.exceptions.HTTPError: HTTP request resulted in an error
+        (response.status_code >= 400).
+  """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
   instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"

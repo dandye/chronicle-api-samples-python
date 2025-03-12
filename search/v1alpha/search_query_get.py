@@ -41,21 +41,21 @@ def get_search_query(http_session: requests.AuthorizedSession, proj_id: str,
                      query_id: str) -> None:
   """Get a search query by ID from Chronicle.
 
-    Args:
-        http_session: Authorized session for HTTP requests.
-        proj_id: GCP project id or number to which the target instance belongs.
-        proj_instance: Customer ID (uuid with dashes) for the instance.
-        proj_region: region in which the target project is located.
-        user_id: ID of the user who owns the search query.
-        query_id: ID of the search query to retrieve.
+Args:
+  http_session: Authorized session for HTTP requests.
+  proj_id: GCP project id or number to which the target instance belongs.
+  proj_instance: Customer ID (uuid with dashes) for the instance.
+  proj_region: region in which the target project is located.
+  user_id: ID of the user who owns the search query.
+  query_id: ID of the search query to retrieve.
 
-    Raises:
-        requests.exceptions.HTTPError: HTTP request resulted in an error
-            (response.status_code >= 400).
+Raises:
+  requests.exceptions.HTTPError: HTTP request resulted in an error
+    (response.status_code >= 400).
 
-    Requires the following IAM permission on the instance resource:
-    chronicle.searchQueries.get
-    """
+Requires the following IAM permission on the instance resource:
+chronicle.searchQueries.get
+"""
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
   # pylint: disable=line-too-long

@@ -59,8 +59,7 @@ def find_udm_events(http_session: requests.AuthorizedSession,
                     tokens: Optional[List[str]] = None,
                     event_ids: Optional[List[str]] = None,
                     return_unenriched_data: bool = False,
-                    return_all_events_for_log: bool = False
-) -> None:
+                    return_all_events_for_log: bool = False) -> None:
   # pylint: disable=line-too-long
   """Find UDM events in Chronicle using the Legacy Find UDM Events API.
 

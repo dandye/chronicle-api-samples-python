@@ -80,14 +80,17 @@ def batch_update_curated_rule_set_deployments(
   """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable-next=line-too-long
   parent = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
 
   # We use "-" in the URL because we provide category and rule_set IDs
   # in the request data
+  # pylint: disable-next=line-too-long
   url = f"{base_url_with_region}/v1alpha/{parent}/curatedRuleSetCategories/-/curatedRuleSets/-/curatedRuleSetDeployments:batchUpdate"
 
   def make_deployment_name(category: str, rule_set: str, precision: str) -> str:
     """Helper function to create a deployment name."""
+    # pylint: disable-next=line-too-long
     return f"{parent}/curatedRuleSetCategories/{category}/curatedRuleSets/{rule_set}/curatedRuleSetDeployments/{precision}"
 
   # Example deployment configurations - update these with actual IDs
