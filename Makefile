@@ -1,5 +1,8 @@
 .PHONY: install dist clean
 
+build:
+	python -m build
+
 install:
 	python setup.py install
 
