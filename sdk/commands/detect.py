@@ -170,8 +170,13 @@ def detections():
     required=True,
     help="Identifier for the detection.",
 )
+@click.option(
+    "--rule-id",
+    required=True,
+    help="Identifier for the rule that created the detection.",
+)
 def get_detection_cmd(credentials_file, project_id, project_instance, region,
-                      detection_id):
+                      detection_id, rule_id):
   """Get a detection by ID."""
   auth_session = chronicle_auth.initialize_http_session(
       credentials_file,
@@ -183,6 +188,7 @@ def get_detection_cmd(credentials_file, project_id, project_instance, region,
       project_instance,
       region,
       detection_id,
+      rule_id,
   )
   print(json.dumps(detection, indent=2))
 
@@ -211,9 +217,9 @@ def list_detections_cmd(credentials_file, project_id, project_instance, region,
   )
   result = list_detections.list_detections(
       auth_session,
+      region,
       project_id,
       project_instance,
-      region,
       filter,
       page_size,
       page_token,

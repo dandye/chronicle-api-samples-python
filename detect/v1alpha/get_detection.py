@@ -22,7 +22,8 @@ Usage:
     --project_id=<PROJECT_ID> \
     --project_instance=<PROJECT_INSTANCE> \
     --region=<REGION> \
-    --detection_id=<DETECTION_ID>
+    --detection_id=<DETECTION_ID> \
+    --rule_id=<RULE_ID>
 
 API reference:
 https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.legacy/legacyGetDetection
@@ -51,6 +52,7 @@ def get_detection(
     proj_instance: str,
     proj_region: str,
     detection_id: str,
+    rule_id: str,
 ) -> Mapping[str, Any]:
   """Gets a Detection using the Legacy Get Detection API.
 
@@ -60,6 +62,7 @@ def get_detection(
     proj_instance: Customer ID (uuid with dashes) for the Chronicle instance.
     proj_region: region in which the target project is located.
     detection_id: Identifier for the detection.
+    rule_id: Identifier for the rule that created the detection.
 
   Returns:
     Dictionary representation of the Detection.
@@ -78,7 +81,7 @@ def get_detection(
   url = f"{base_url_with_region}/v1alpha/{parent}/legacy:legacyGetDetection"
   # pylint: enable=line-too-long
 
-  query_params = {"detectionId": detection_id}
+  query_params = {"detectionId": detection_id, "ruleId": rule_id}
 
   response = http_session.request("GET", url, params=query_params)
   if response.status_code >= 400:
@@ -100,6 +103,10 @@ if __name__ == "__main__":
                       type=str,
                       required=True,
                       help="Identifier for the detection")
+  parser.add_argument("--rule_id",
+                      type=str,
+                      required=True,
+                      help="Identifier for the rule that created the detection")
 
   args = parser.parse_args()
 
@@ -111,5 +118,6 @@ if __name__ == "__main__":
       args.project_instance,
       args.region,
       args.detection_id,
+      args.rule_id,
   )
   print(json.dumps(detection, indent=2))

@@ -23,9 +23,6 @@ from common import chronicle_auth
 from lists.v1alpha import create_list
 from lists.v1alpha import get_list
 from lists.v1alpha import patch_list
-from reference_lists.v1alpha import create_reference_list
-from reference_lists.v1alpha import get_reference_list
-from reference_lists.v1alpha import list_reference_lists
 from sdk.commands.common import add_common_options
 
 SCOPES = [
@@ -137,116 +134,7 @@ def patch_list_cmd(credentials_file, project_id, project_instance, region,
   print(json.dumps(result, indent=2))
 
 
-@lists.group()
-def reference():
-  """Reference Lists API commands."""
-  pass
 
 
-@reference.command("create")
-@add_common_options
-@click.option(
-    "--reference-list-id",
-    required=True,
-    help="ID to use for the new reference list.",
-)
-@click.option(
-    "--entries",
-    required=True,
-    help="JSON array of strings to add to the reference list.",
-)
-@click.option(
-    "--syntax-type",
-    type=click.Choice([
-        "REFERENCE_LIST_SYNTAX_TYPE_UNSPECIFIED",
-        "REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
-        "REFERENCE_LIST_SYNTAX_TYPE_REGEX", "REFERENCE_LIST_SYNTAX_TYPE_CIDR"
-    ]),
-    default="REFERENCE_LIST_SYNTAX_TYPE_PLAIN_TEXT_STRING",
-    help="Type of entries in the list.",
-)
-@click.option(
-    "--scope-names",
-    help="Optional JSON array of scope names.",
-)
-@click.option(
-    "--description",
-    help="Optional description of the reference list.",
-)
-def create_reference_list_cmd(credentials_file, project_id, project_instance,
-                              region, reference_list_id, entries, syntax_type,
-                              scope_names, description):
-  """Create a new reference list."""
-  auth_session = chronicle_auth.initialize_http_session(
-      credentials_file,
-      SCOPES,
-  )
-
-  entries_list = json.loads(entries)
-  scope_names_list = json.loads(scope_names) if scope_names else None
-
-  result = create_reference_list.create_reference_list(
-      auth_session,
-      project_id,
-      project_instance,
-      region,
-      reference_list_id,
-      entries_list,
-      syntax_type,
-      scope_names_list,
-      description,
-  )
-  print(json.dumps(result, indent=2))
 
 
-@reference.command("get")
-@add_common_options
-@click.option(
-    "--reference-list-id",
-    required=True,
-    help="ID of the reference list to retrieve.",
-)
-def get_reference_list_cmd(credentials_file, project_id, project_instance,
-                           region, reference_list_id):
-  """Get a reference list by ID."""
-  auth_session = chronicle_auth.initialize_http_session(
-      credentials_file,
-      SCOPES,
-  )
-  result = get_reference_list.get_reference_list(
-      auth_session,
-      project_id,
-      project_instance,
-      region,
-      reference_list_id,
-  )
-  print(json.dumps(result, indent=2))
-
-
-@reference.command("list")
-@add_common_options
-@click.option(
-    "--page-size",
-    type=int,
-    help="Optional maximum number of reference lists to return.",
-)
-@click.option(
-    "--page-token",
-    help="Optional page token from a previous response for pagination.",
-)
-def list_reference_lists_cmd(credentials_file, project_id, project_instance,
-                             region, page_size, page_token):
-  """List reference lists."""
-  auth_session = chronicle_auth.initialize_http_session(
-      credentials_file,
-      SCOPES,
-  )
-  result = list_reference_lists.list_reference_lists(
-      auth_session,
-      project_id,
-      project_instance,
-      region,
-      page_size,
-      page_token,
-  )
-  print(json.dumps(result, indent=2))
