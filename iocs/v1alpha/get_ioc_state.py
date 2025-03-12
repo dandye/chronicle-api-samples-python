@@ -61,9 +61,10 @@ def get_ioc_state(
   """
   base_url_with_region = regions.url_always_prepend_region(
       CHRONICLE_API_BASE_URL, proj_region)
+  # pylint: disable=line-too-long
   instance = f"projects/{proj_id}/locations/{proj_region}/instances/{proj_instance}"
   url = f"{base_url_with_region}/v1alpha/{instance}/iocs/{ioc_type}/{ioc_value}:getIocState"
-
+  # pylint: enable=line-too-long
   response = http_session.request("GET", url)
   if response.status_code >= 400:
     print(response.text)

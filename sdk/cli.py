@@ -56,9 +56,9 @@ def add_common_options(func):
 def cli():
   """Chronicle API Command Line Interface.
 
-    This CLI provides access to Chronicle's detection, ingestion, IoCs,
-    search, and lists APIs.
-    """
+  This CLI provides access to Chronicle's detection, ingestion, IoCs,
+  search, and lists APIs.
+  """
   pass
 
 

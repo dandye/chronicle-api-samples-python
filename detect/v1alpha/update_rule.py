@@ -33,7 +33,7 @@ API reference:
     https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules/patch
     https://cloud.google.com/chronicle/docs/reference/rest/v1alpha/projects.locations.instances.rules#Rule
 """
-#pylint: enable=line-too-long
+# pylint: enable=line-too-long
 import argparse
 import json
 from typing import Any, Mapping
