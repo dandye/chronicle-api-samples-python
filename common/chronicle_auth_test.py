@@ -16,12 +16,11 @@
 
 import os
 import tempfile
-
 import unittest
 from unittest import mock
-from google.oauth2 import service_account
 
 import chronicle_auth
+from google.oauth2 import service_account
 
 
 class ChronicleAuthTest(unittest.TestCase):
