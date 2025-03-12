@@ -184,8 +184,9 @@ Available commands:
 
 - `create <name> [--description <desc>] --lines <json-array>`: Create a new list
 - `get <list-id>`: Get list by ID
-- ```patch <list-id> [--description <desc>] [--lines-to-add <json-array>] \
-  [--lines-to-remove <json-array>]```: Update an existing list
+- `patch <list-id> [--description <desc>]
+  [--lines-to-add <json-array>] \
+  [--lines-to-remove <json-array>]`: Update an existing list
 
 ### Examples
 
