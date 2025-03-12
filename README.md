@@ -105,10 +105,10 @@ CHRONICLE_INSTANCE=your-instance-id
 CHRONICLE_REGION=your-region
 ```
 
-The SDK will use values from the `.env` file provided with the  --env-file flag.
-(It has trouble finding your local .env due to SDK Path issues, which we are
-working to resolve.)
- Command-line options take precedence over environment variables.
+The SDK will use values from the `.env` file provided with the `--env-file`
+flag. (It has trouble finding your local .env due to SDK Path issues, which we
+are working to resolve.) Command-line options take precedence over environment
+variables.
 
 ### Command Groups
 
