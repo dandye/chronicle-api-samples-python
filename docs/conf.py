@@ -82,7 +82,7 @@ html_theme = "furo"
 
 # html_logo = "img/LogStory_logo.png"
 html_logo = "img/SecOps-512-color.png"
-html_favicon = "img/SecOps-32-color.png.jpg"
+html_favicon = "img/SecOps-32-color.png"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -96,7 +96,7 @@ static_dir = os.path.join(os.path.dirname(__file__), '_static')
 os.makedirs(static_dir, exist_ok=True)
 
 # Set static paths for custom CSS/JS/images
-html_static_path = ["_static"]
+html_static_path = ["_static", "img"]
 
 # Theme options
 html_theme_options = {

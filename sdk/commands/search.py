@@ -20,6 +20,7 @@ from common import chronicle_auth
 
 from search.v1alpha import asset_events_find
 from search.v1alpha import raw_logs_find
+from search.v1alpha import search_queries_list
 from search.v1alpha import search_query_get
 from search.v1alpha import udm_events_find
 
@@ -201,4 +202,37 @@ def get_search_query_cmd(ctx, user_id, query_id):
       ctx.obj["region"],
       user_id,
       query_id,
+  )
+
+
+@search.command("list-search-queries")
+@click.option(
+    "--user-id",
+    required=True,
+    help="ID of the user whose search queries to list.",
+)
+@click.option(
+    "--page-size",
+    type=int,
+    help="Optional maximum number of search queries to return.",
+)
+@click.option(
+    "--page-token",
+    help="Optional page token from a previous response.",
+)
+@click.pass_context
+def list_search_queries_cmd(ctx, user_id, page_size, page_token):
+  """List search queries for a specific user."""
+  auth_session = chronicle_auth.initialize_http_session(
+      ctx.obj["credentials_file"],
+      SCOPES,
+  )
+  search_queries_list.list_search_queries(
+      auth_session,
+      ctx.obj["project_id"],
+      ctx.obj["project_instance"],
+      ctx.obj["region"],
+      user_id,
+      page_size,
+      page_token,
   )
