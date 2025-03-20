@@ -58,14 +58,14 @@ python -m lists.v1alpha.get_list -h
 python -m lists.v1alpha.patch_list -h
 ```
 
-## Installing the Chronicle REST API SDK
+## Installing the Chronicle REST API CLI
 
-Install the SDK from source
+Install the CLI from source
 ```
 python setup.py install
 ```
 
-Alternatively, install the SDK from source using make
+Alternatively, install the CLI from source using make
 ```
 make install
 ```
@@ -75,9 +75,9 @@ Build the wheel file
 make dist
 ```
 
-## Using the Chronicle REST API SDK
+## Using the Chronicle REST API CLI
 
-The SDK provides a unified command-line interface for Chronicle APIs.
+The CLI provides a unified command-line interface for Chronicle APIs.
 The CLI follows this pattern:
 ```
 chronicle [common options] COMMAND_GROUP COMMAND [command options]
@@ -105,7 +105,7 @@ CHRONICLE_INSTANCE=your-instance-id
 CHRONICLE_REGION=your-region
 ```
 
-The SDK will use values from the `.env` file or a file provided with the
+The CLI will use values from the `.env` file or a file provided with the
 `--env-file` parameter. Command-line options take precedence over environment
 variables.
 

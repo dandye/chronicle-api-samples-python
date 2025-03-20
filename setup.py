@@ -13,15 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Setup configuration for Chronicle API SDK."""
+"""Setup configuration for Chronicle API CLI."""
 
 from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name="chronicle-api",
+    name="chronicle-api-cli",
     version="0.1.3",
-    description="Chronicle API SDK and CLI",
+    description="Chronicle API CLI",
     author="Google LLC",
     author_email="chronicle-support@google.com",
     packages=find_packages(include=[
