@@ -23,8 +23,8 @@ import logging
 from typing import Mapping, Any
 
 from common import chronicle_auth
-from common import project_instance
 from common import project_id
+from common import project_instance
 from common import regions
 from google.auth.transport import requests
 
