@@ -38,7 +38,7 @@ def logs_import(
     logs_file,
     proj_id: str,
     region: str,
-    project_instance: str,
+    proj_instance: str,
     forwarder_id: str) -> Mapping[str, Any]:
   """Imports logs to Chronicle using the GCP CLOUDAUDIT log type.
 
@@ -47,7 +47,7 @@ def logs_import(
     logs_file: File-like object containing the logs to import.
     proj_id: Google Cloud project ID.
     region: Chronicle region.
-    project_instance: Chronicle instance.
+    proj_instance: Chronicle instance.
     forwarder_id: UUID4 of the forwarder.
 
   Returns:
@@ -59,7 +59,7 @@ def logs_import(
   log_type = "GCP_CLOUDAUDIT"
   parent = (f"projects/{proj_id}/"
             f"locations/{region}/"
-            f"instances/{project_instance}/"
+            f"instances/{proj_instance}/"
             f"logTypes/{log_type}")
   url = (f"https://{region}-chronicle.googleapis.com/"
          f"v1alpha/{parent}/logs:import")
@@ -79,7 +79,7 @@ def logs_import(
           ],
           "forwarder": (f"projects/{proj_id}/"
                         f"locations/{region}/"
-                        f"instances/{project_instance}/"
+                        f"instances/{proj_instance}/"
                         f"forwarders/{forwarder_id}")
       }
   }
@@ -131,13 +131,13 @@ def main():
         args.project_instance,
         args.forwarder_id
     )
-    logging.info("Import operation completed successfully")
+    logger.info("Import operation completed successfully")
     print(json.dumps(result, indent=2))
   except Exception as e:  # pylint: disable=broad-except
-    logging.error("Import operation failed: %s", str(e))
+    logger.error("Import operation failed: %s", str(e))
     return 1
   return 0
 
 
 if __name__ == "__main__":
-    main()
+  main()
