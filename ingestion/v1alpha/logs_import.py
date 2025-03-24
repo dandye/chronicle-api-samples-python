@@ -28,6 +28,7 @@ from common import project_instance
 from common import regions
 from google.auth.transport import requests
 
+CHRONICLE_API_BASE_URL = "https://chronicle.googleapis.com"
 SCOPES = [
     "https://www.googleapis.com/auth/cloud-platform",
 ]
@@ -35,19 +36,21 @@ SCOPES = [
 
 def logs_import(
     http_session: requests.AuthorizedSession,
-    logs_file,
     proj_id: str,
-    region: str,
     proj_instance: str,
+    proj_region: str,
+    log_type: str,
+    logs_file: str,
     forwarder_id: str) -> Mapping[str, Any]:
   """Imports logs to Chronicle using the GCP CLOUDAUDIT log type.
 
   Args:
     http_session: Authorized session for HTTP requests.
-    logs_file: File-like object containing the logs to import.
     proj_id: Google Cloud project ID.
-    region: Chronicle region.
     proj_instance: Chronicle instance.
+    proj_region: Chronicle region.
+    log_type: Log type.
+    logs_file: File-like object containing the logs to import.
     forwarder_id: UUID4 of the forwarder.
 
   Returns:
@@ -56,13 +59,16 @@ def logs_import(
   Raises:
     requests.HTTPError: If the request fails.
   """
-  log_type = "GCP_CLOUDAUDIT"
   parent = (f"projects/{proj_id}/"
-            f"locations/{region}/"
+            f"locations/{proj_region}/"
             f"instances/{proj_instance}/"
             f"logTypes/{log_type}")
-  url = (f"https://{region}-chronicle.googleapis.com/"
-         f"v1alpha/{parent}/logs:import")
+
+  base_url_with_region = regions.url_always_prepend_region(
+      CHRONICLE_API_BASE_URL,
+      proj_region
+  )
+  url = (f"{base_url_with_region}/v1alpha/{parent}/logs:import")
   logs = logs_file.read()
   # Reset file pointer to beginning in case it needs to be read again
   logs_file.seek(0)
@@ -75,10 +81,13 @@ def logs_import(
                   "data": logs,
                   "log_entry_time": now,
                   "collection_time": now,
+                  "labels": {
+                      "forwarder_id": {"value": forwarder_id}
+                  }
               }
           ],
           "forwarder": (f"projects/{proj_id}/"
-                        f"locations/{region}/"
+                        f"locations/{proj_region}/"
                         f"instances/{proj_instance}/"
                         f"forwarders/{forwarder_id}")
       }
@@ -113,6 +122,11 @@ def main():
       required=True,
       help="UUID4 of the forwarder")
   parser.add_argument(
+      "--log_type",
+      type=str,
+      required=True,
+      help="Log type")
+  parser.add_argument(
       "--logs_file",
       type=argparse.FileType("r"),
       required=True,
@@ -125,10 +139,11 @@ def main():
   try:
     result = logs_import(
         auth_session,
-        args.logs_file,
         args.project_id,
-        args.region,
         args.project_instance,
+        args.region,
+        args.log_type,
+        args.logs_file,
         args.forwarder_id
     )
     logger.info("Import operation completed successfully")
